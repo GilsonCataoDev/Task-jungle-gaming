@@ -8,7 +8,7 @@ carrinho, perfil, carteiras e pedidos.
 - **Stack:** React 19, TypeScript, TanStack Router, TanStack Query, Axios, Socket.IO, Tailwind CSS v4,
   shadcn/ui, MSW, Playwright, Lighthouse.
 - **Arquitetura, contratos REST, eventos e decisões:** veja [ARCHITECTURE.md](ARCHITECTURE.md).
-- **Aplicação publicada:** _(preencher com a URL do deploy)_
+- **Aplicação publicada:** https://task-jungle-gaming.vercel.app/
 
 ## Telas
 
@@ -148,10 +148,21 @@ Resultado (mediana de 3 medições, build de produção local):
 | Detalhe do NFT | Mobile | 91 | 100 | 100 | 100 | 3,32 s | 0,024 | 27 ms |
 | Detalhe do NFT | Desktop | 100 | 100 | 100 | 100 | 658 ms | 0,047 | 0 ms |
 
-Metas: Performance ≥ 90, Acessibilidade ≥ 95, Boas práticas ≥ 95, SEO ≥ 90. **Tudo atingido, exceto
-Performance do Início no mobile (88; as três medições ficaram entre 88 e 89).**
+Metas: Performance ≥ 90, Acessibilidade ≥ 95, Boas práticas ≥ 95, SEO ≥ 90. No build local, tudo atingido,
+exceto Performance do Início no mobile (88; as três medições ficaram entre 88 e 89).
 
-**Por que o Início no mobile fica em 88:**
+**No deploy publicado (Vercel, mediana de 3 medições) todas as metas foram atingidas:**
+
+| Página | Perfil | Performance | Acessibilidade | Boas práticas | SEO | LCP | CLS | TBT |
+|---|---|---|---|---|---|---|---|---|
+| Início | Mobile | **93** | 100 | 100 | 100 | 2,64 s | 0,000 | 158 ms |
+| Início | Desktop | 100 | 100 | 100 | 100 | 582 ms | 0,000 | 0 ms |
+| Detalhe do NFT | Mobile | 96 | 100 | 100 | 100 | 2,48 s | 0,024 | 32 ms |
+| Detalhe do NFT | Desktop | 100 | 100 | 100 | 100 | 588 ms | 0,047 | 0 ms |
+
+O relatório em `lighthouse-report/` é o do deploy. A diferença para o local vem da compressão e do CDN da Vercel.
+
+**Por que o Início no mobile ficava em 88 no build local:**
 
 - O elemento de LCP é a imagem do primeiro cartão do catálogo (no mobile o herói é compacto e o catálogo
   fica na primeira tela). Essa imagem só existe depois que a **API responde**, e a API só responde depois que o

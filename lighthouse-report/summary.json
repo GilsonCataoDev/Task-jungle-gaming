@@ -1,5 +1,5 @@
 {
-  "baseUrl": "http://localhost:4173",
+  "baseUrl": "https://task-jungle-gaming.vercel.app",
   "runs": 3,
   "targets": {
     "performance": 90,
@@ -13,29 +13,30 @@
       "profile": "Mobile",
       "runs": 3,
       "scores": {
-        "performance": 88,
+        "performance": 93,
         "accessibility": 100,
         "best-practices": 100,
         "seo": 100
       },
-      "lcp": 3689.7852000000003,
+      "lcp": 2639.992,
       "cls": 0,
-      "tbt": 74,
-      "fcp": 1810.6431,
-      "si": 1810.6431,
+      "tbt": 158.00000000000023,
+      "fcp": 1714.992,
+      "si": 1714.992,
       "allPerformanceScores": [
-        89,
-        88,
-        88
+        93,
+        92,
+        94
       ],
       "failedAudits": [
-        "first-contentful-paint (89)",
-        "largest-contentful-paint (58)",
+        "largest-contentful-paint (85)",
+        "max-potential-fid (80)",
         "valid-source-maps (0)",
         "unused-javascript (0)",
+        "image-delivery-insight (50)",
         "lcp-discovery-insight (0)",
         "network-dependency-tree-insight (0)",
-        "render-blocking-insight (0)"
+        "render-blocking-insight (50)"
       ]
     },
     {
@@ -48,11 +49,11 @@
         "best-practices": 100,
         "seo": 100
       },
-      "lcp": 630.1478,
+      "lcp": 581.663,
       "cls": 0.000003753302037287242,
       "tbt": 0,
-      "fcp": 410.1478,
-      "si": 410.1478,
+      "fcp": 421.663,
+      "si": 492.26244850092604,
       "allPerformanceScores": [
         100,
         100,
@@ -71,29 +72,27 @@
       "profile": "Mobile",
       "runs": 3,
       "scores": {
-        "performance": 91,
+        "performance": 96,
         "accessibility": 100,
         "best-practices": 100,
         "seo": 100
       },
-      "lcp": 3323.7818,
+      "lcp": 2475.7709999999997,
       "cls": 0.02430133657351154,
-      "tbt": 27,
-      "fcp": 1808.9561,
-      "si": 1808.9561,
+      "tbt": 32,
+      "fcp": 1717.097,
+      "si": 1717.097,
       "allPerformanceScores": [
-        91,
-        91,
-        91
+        96,
+        97,
+        96
       ],
       "failedAudits": [
-        "first-contentful-paint (89)",
-        "largest-contentful-paint (69)",
         "valid-source-maps (0)",
         "unused-javascript (0)",
         "lcp-discovery-insight (0)",
         "network-dependency-tree-insight (0)",
-        "render-blocking-insight (0)"
+        "render-blocking-insight (50)"
       ]
     },
     {
@@ -106,11 +105,11 @@
         "best-practices": 100,
         "seo": 100
       },
-      "lcp": 658.30845,
+      "lcp": 588.0565,
       "cls": 0.04674276834807554,
       "tbt": 0,
-      "fcp": 410.8723,
-      "si": 410.8723,
+      "fcp": 424.0565,
+      "si": 519.4859255025759,
       "allPerformanceScores": [
         100,
         100,

@@ -224,7 +224,7 @@ Baselines visuais ficam em `e2e/__screenshots__/<sistema>/<projeto>/`. Como a fo
 - Socket.IO simulado só fala `websocket` (sem polling), sem rooms nem acks, e um namespace.
 - O status do pedido avança por relógio (1,5 s → processando, 3,5 s → confirmado), não por um processo real.
 - Só existem baselines visuais de Windows (`win32`); em Linux/macOS elas são criadas na primeira execução, então a regressão visual só protege a partir da segunda.
-- Performance do Início no mobile fica em 88 (ver o README: o LCP depende do MSW subir no navegador).
+- Performance do Início no mobile fica em 88 no build local e 93 no deploy da Vercel (ver o README: o LCP depende do MSW subir no navegador).
 
 ## Desvios do Figma
 O design foi implementado a partir de **prints** das telas (desktop 1440 e mobile 390); o arquivo do Figma em si não

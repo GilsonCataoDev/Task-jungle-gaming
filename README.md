@@ -155,10 +155,10 @@ exceto Performance do Início no mobile (88; as três medições ficaram entre 8
 
 | Página | Perfil | Performance | Acessibilidade | Boas práticas | SEO | LCP | CLS | TBT |
 |---|---|---|---|---|---|---|---|---|
-| Início | Mobile | **93** | 100 | 100 | 100 | 2,64 s | 0,000 | 158 ms |
-| Início | Desktop | 100 | 100 | 100 | 100 | 582 ms | 0,000 | 0 ms |
-| Detalhe do NFT | Mobile | 96 | 100 | 100 | 100 | 2,48 s | 0,024 | 32 ms |
-| Detalhe do NFT | Desktop | 100 | 100 | 100 | 100 | 588 ms | 0,047 | 0 ms |
+| Início | Mobile | **95** | 100 | 100 | 100 | 2,69 s | 0,000 | 80 ms |
+| Início | Desktop | 100 | 100 | 100 | 100 | 579 ms | 0,000 | 0 ms |
+| Detalhe do NFT | Mobile | 97 | 100 | 100 | 100 | 2,47 s | 0,024 | 26 ms |
+| Detalhe do NFT | Desktop | 100 | 100 | 100 | 100 | 584 ms | 0,047 | 0 ms |
 
 O relatório em `lighthouse-report/` é o do deploy. A diferença para o local vem da compressão e do CDN da Vercel.
 

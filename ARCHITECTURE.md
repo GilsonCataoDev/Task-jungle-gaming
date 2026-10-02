@@ -238,7 +238,7 @@ Baselines visuais ficam em `e2e/__screenshots__/<sistema>/<projeto>/`. Como a fo
 - Mocks rodam no navegador: o estado vive no `localStorage` de cada visitante (não é compartilhado entre pessoas).
 - Socket.IO simulado só fala `websocket` (sem polling), sem rooms nem acks, e um namespace.
 - O status do pedido avança por relógio (1,5 s → processando, 3,5 s → confirmado), não por um processo real.
-- Só existem baselines visuais de Windows (`win32`); em Linux/macOS elas são criadas na primeira execução, então a regressão visual só protege a partir da segunda.
+- As baselines visuais existem para Windows (`win32`), Linux e macOS (`darwin`), 21 por sistema. As de Linux e macOS foram geradas em runners reais pelo workflow `visual-baselines.yml` (Actions > Baselines visuais > Run workflow), que também as executa uma segunda vez para provar que são estáveis. Um sistema novo cria a sua baseline na primeira execução.
 - Performance do Início no mobile fica em 88 no build local e 96 no deploy da Vercel (ver o README: o LCP depende do MSW subir no navegador).
 
 ## Segurança

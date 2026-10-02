@@ -117,6 +117,7 @@ declare global {
       emit(event: "nft.updated" | "order.updated", payload: Record<string, unknown>): void
       disconnectSockets(): void
       connectedSockets(): number
+      deliveries(): { event: string; id: string; to: string | null }[]
     }
   }
 }

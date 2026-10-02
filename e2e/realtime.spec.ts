@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { addToCartFromDetail, confirmPurchase, goToCheckout, login, NFT, shown, waitForApp } from "./helpers"
+import { addToCartFromDetail, apiOrders, confirmPurchase, goToCheckout, login, logout, MAYA, NFT, shown, waitForApp } from "./helpers"
 
 const { emerald } = NFT
 
@@ -48,5 +48,31 @@ test.describe("tempo real (Socket.IO)", () => {
     await expect(card).toContainText("Esgotado")
     await page.evaluate((id) => window.__mocks.updateNft(id, { priceEth: "0.77", available: 3 }), NFT.golden.id)
     await expect(card).toContainText("0.77 ETH")
+  })
+  test("eventos de pedido só chegam ao dono; sair ou trocar de usuário encerra a conexão anterior", async ({ page }) => {
+    await goToCheckout(page) // Nova Sato
+    await confirmPurchase(page)
+    const [{ id: orderId }] = await apiOrders(page)
+    const deliveries = (event: string) => page.evaluate(([name, id]) => window.__mocks.deliveries().filter((item) => item.event === name && item.id === id), [event, orderId])
+
+    // O pedido avança (processando -> confirmado) e cada evento vai só para a conexão da Nova.
+    await expect.poll(async () => (await deliveries("order.updated")).length, { timeout: 10_000 }).toBeGreaterThanOrEqual(2)
+    expect((await deliveries("order.updated")).every((item) => item.to === "u_demo")).toBe(true)
+
+    await page.getByRole("dialog", { name: "Recibo do pedido" }).getByRole("button", { name: "Fechar" }).click() // o modal deixa o resto da página inerte
+    // Sair: a conexão da Nova cai e nasce outra, de visitante, que não recebe eventos de pedido.
+    await logout(page)
+    await expect.poll(() => page.evaluate(() => window.__mocks.connectedSockets())).toBe(1)
+    const afterLogout = (await deliveries("order.updated")).length
+    await page.evaluate((id) => window.__mocks.emit("order.updated", { id, version: 99, status: "refused", transactionId: null }), orderId)
+    await page.waitForTimeout(400)
+    expect((await deliveries("order.updated")).length).toBe(afterLogout)
+
+    // Outro usuário: o pedido da Nova continua sem chegar à conexão da Maya.
+    await login(page, MAYA)
+    await expect.poll(() => page.evaluate(() => window.__mocks.connectedSockets())).toBe(1)
+    await page.evaluate((id) => window.__mocks.emit("order.updated", { id, version: 100, status: "refused", transactionId: null }), orderId)
+    await page.waitForTimeout(400)
+    expect((await deliveries("order.updated")).some((item) => item.to === "u_maya")).toBe(false)
   })
 })

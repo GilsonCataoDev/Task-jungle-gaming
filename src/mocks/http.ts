@@ -16,8 +16,9 @@ const expired = () => fail(401, "session_expired", "Sua sessão expirou. Entre n
 
 /** Latência do cenário + erros globais. Devolve uma Response para interromper o handler. */
 async function preflight(options: Options): Promise<Response | null> {
-  await delay(latencyMs())
   const scenario = getScenario()
+  if (scenario === "offline") return HttpResponse.error() // erro de rede: o Axios recebe "Network Error", sem status
+  await delay(latencyMs())
   if (scenario === "server-error") return fail(503, "server_error", "Serviço indisponível. Tente novamente em instantes.")
   if (scenario === "mutation-error" && options.mutation) return fail(500, "mutation_failed", "Não foi possível salvar a alteração.")
   return null

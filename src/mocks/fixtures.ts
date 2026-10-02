@@ -154,9 +154,12 @@ export function reviewsFor(nft: Nft): Review[] {
   }))
 }
 
-export const COUPONS = {
-  KURIO10: { kind: "percent" as const, basisPoints: 1000 },
-  WELCOME: { kind: "flat" as const, eth: "0.05" },
+type Coupon = { expiresAt?: string } & ({ kind: "percent"; basisPoints: number } | { kind: "flat"; eth: string })
+export const COUPONS: Record<string, Coupon> = {
+  KURIO10: { kind: "percent", basisPoints: 1000 },
+  WELCOME: { kind: "flat", eth: "0.05" },
+  /** Existe, mas venceu: serve ao cenário "cupom expirado". */
+  NATAL20: { kind: "percent", basisPoints: 2000, expiresAt: "2024-12-26T00:00:00.000Z" },
 }
 
 /** "Taxa estimada" do Figma. */

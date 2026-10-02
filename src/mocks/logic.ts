@@ -44,9 +44,11 @@ export function computeQuote(userId: string, couponInput: string | null): Quote 
   let appliedCoupon: string | null = null
 
   if (code) {
-    const coupon = COUPONS[code as keyof typeof COUPONS]
+    const coupon = COUPONS[code]
     if (!coupon) {
-      issues.push({ code: "invalid_coupon", message: "Cupom inválido ou expirado." })
+      issues.push({ code: "invalid_coupon", message: "Cupom inválido." })
+    } else if (coupon.expiresAt && Date.parse(coupon.expiresAt) < Date.now()) {
+      issues.push({ code: "invalid_coupon", message: "Cupom expirado." })
     } else {
       appliedCoupon = code
       const raw = coupon.kind === "percent" ? percentOfEth(subtotalEth, coupon.basisPoints) : coupon.eth

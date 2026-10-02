@@ -46,7 +46,8 @@ export const orderHandlers = [
 
     const quote = computeQuote(userId, body.coupon)
     if (!quote.items.length) return fail(409, "empty_cart", "Seu carrinho está vazio.")
-    if (quote.issues.some((issue) => issue.code === "invalid_coupon")) return fail(422, "invalid_coupon", "Cupom inválido ou expirado.")
+    const couponIssue = quote.issues.find((issue) => issue.code === "invalid_coupon")
+    if (couponIssue && "message" in couponIssue) return fail(422, "invalid_coupon", couponIssue.message)
     if (quote.issues.some((issue) => issue.code === "unavailable")) return fail(409, "inventory_conflict", "Alguns itens ficaram indisponíveis. Revise o carrinho.")
     if (compareEth(quote.totalEth, body.expectedTotalEth) !== 0) {
       return fail(409, "price_changed", `O total mudou para ${quote.totalEth} ETH. Revise antes de confirmar.`)

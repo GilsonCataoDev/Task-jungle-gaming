@@ -26,6 +26,33 @@ test.describe("acesso direto e detalhe", () => {
     await expect(zoom).toBeHidden()
   })
 
+  test("edição indisponível não pode ser escolhida nem comprada", async ({ page }) => {
+    await page.goto(`/nfts/${NFT.emerald.id}`) // a edição 1/1 deste NFT já foi vendida
+    await expect(page.getByRole("radio", { name: "1/1 (indisponível)" })).toBeDisabled()
+    await expect(page.getByRole("radio", { name: "1/10" })).toBeEnabled()
+    // O servidor também recusa: a regra não depende de a tela esconder a opção.
+    const status = await page.evaluate(async (id) => {
+      const response = await fetch("/api/cart/items", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ nftId: id, edition: "1/1" }) })
+      return { status: response.status, code: (await response.json()).code }
+    }, NFT.emerald.id)
+    expect(status).toEqual({ status: 409, code: "edition_unavailable" })
+  })
+
+  test("limite de quantidade: segue o estoque e o teto de cada edição", async ({ page }) => {
+    await page.goto("/nfts/sage-nomad-009") // 4 em estoque; a 1/1 é única e a 1/10 está vendida
+    const quantity = page.getByRole("group", { name: "Quantidade de edições" }).first()
+    const more = quantity.getByRole("button", { name: "Aumentar quantidade" })
+    const value = quantity.getByRole("status", { name: "Quantidade", exact: true })
+
+    for (let i = 0; i < 6; i++) if (await more.isEnabled()) await more.click()
+    await expect(value).toHaveText("4") // edição 1/50: limitada ao estoque
+    await expect(more).toBeDisabled()
+
+    await page.getByText("1/1", { exact: true }).click() // edição única: no máximo 1, e a quantidade já escolhida é reduzida
+    await expect(value).toHaveText("1")
+    await expect(more).toBeDisabled()
+  })
+
   test("edição, quantidade e abas funcionam", async ({ page }) => {
     await page.goto(`/nfts/${NFT.emerald.id}`)
     await page.getByText("1/10", { exact: true }).click() // o rádio é visualmente oculto: clica na etiqueta

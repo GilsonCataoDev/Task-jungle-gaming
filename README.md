@@ -123,13 +123,13 @@ reconectar, o REST volta a ser a fonte da verdade. O transporte simulado e suas 
 
 ## Testes
 
-`npm run test:e2e` roda **106 testes** em 3 projetos: desktop (1440), tablet (768) e mobile (390; tablet e
+`npm run test:e2e` roda **112 testes** em 3 projetos: desktop (1440), tablet (768) e mobile (390; tablet e
 mobile rodam só a spec responsiva). Cada teste abre um contexto limpo, então o banco simulado nasce das
 fixtures e não há dependência entre testes. O mapa dos 12 cenários do desafio está em
 [ARCHITECTURE.md](ARCHITECTURE.md#testes-e2e-playwright).
 
 Regressão visual: as baselines ficam versionadas em `e2e/__screenshots__/<sistema>/<projeto>/` (hoje há as de
-`win32`). A renderização de fonte muda entre Windows, Linux e macOS, então cada sistema tem a sua pasta: na primeira
+`win32`: início, mercado, detalhe, carrinho, pagamento, login e cadastro, nos 3 viewports). A renderização de fonte muda entre Windows, Linux e macOS, então cada sistema tem a sua pasta: na primeira
 execução em um sistema novo o teste **cria** a baseline e passa; a partir da seguinte, qualquer diferença falha.
 Para refazer de propósito: `npm run test:e2e:update`.
 

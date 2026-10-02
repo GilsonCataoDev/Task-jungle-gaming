@@ -149,7 +149,7 @@ MSW na hora (a rota precisa de `GET /auth/session` antes de pintar). Rotas ficam
 - O estado da conexão aparece num `role="status"` (só para leitores de tela quando "Ao vivo"; visível quando conectando ou reconectando).
 
 ## Mocks e cenários
-Banco em `localStorage` (`kurio:mock-db:v2`), semeado por fixtures determinísticas.
+Banco em `localStorage` (`kurio:mock-db:v3`), semeado por fixtures determinísticas.
 Controle: `?scenario=<nome>` na URL ou `window.__mocks` no console.
 
 | Cenário | Efeito |
@@ -229,7 +229,7 @@ Baselines visuais ficam em `e2e/__screenshots__/<sistema>/<projeto>/`. Como a fo
 ## Segurança
 - Cabeçalhos no `vercel.json`: CSP restritiva (só a própria origem; `style-src-attr 'unsafe-inline'` apenas para os atributos `style` do React), `nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy` e `Permissions-Policy`.
 - Sem `dangerouslySetInnerHTML`/`eval`; links externos com `rel="noopener noreferrer"`; `npm audit` sem vulnerabilidades.
-- **O que mudaria com um backend real:** o token de sessão está no `localStorage` (qualquer XSS o leria); o correto é cookie `HttpOnly; Secure; SameSite`. As senhas do banco simulado ficam em texto puro porque são dados de demonstração no navegador; num servidor real seriam guardadas com hash (argon2/bcrypt), com limite de tentativas de login.
+- **O que mudaria com um backend real:** o token de sessão está no `localStorage` (qualquer XSS o leria); o correto é cookie `HttpOnly; Secure; SameSite`. Num servidor real as senhas seriam guardadas com argon2/bcrypt e haveria limite de tentativas de login. No banco simulado elas já não ficam em claro: `mocks/password.ts` grava `pbkdf2$<sal>$<hash>` (PBKDF2-SHA-256, 100 mil iterações, sal por usuário) via WebCrypto, e as fixtures guardam só o hash.
 
 ## Desvios do Figma
 O design foi implementado a partir de **prints** das telas (desktop 1440 e mobile 390); o arquivo do Figma em si não

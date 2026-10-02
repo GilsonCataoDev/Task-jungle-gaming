@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { buyButton, confirmPurchase, DEMO, FEE, isNarrow, login, NFT, shown, waitForApp } from "./helpers"
+import { buyButton, confirmPurchase, DEMO, FEE, isNarrow, NFT, revealCollectorForm, shown, waitForApp } from "./helpers"
 
 test("compra completa: mercado → login → carrinho → checkout → recibo confirmado", async ({ page }) => {
   // A interface de busca em si é testada em catalog.spec; aqui a busca entra pela URL para valer nos dois layouts.
@@ -8,11 +8,7 @@ test("compra completa: mercado → login → carrinho → checkout → recibo co
   await page.getByRole("link", { name: `Ver ${NFT.emerald.name}` }).first().click()
   await expect(page.getByRole("heading", { level: 1, name: NFT.emerald.name })).toBeVisible()
 
-  // Sem login, comprar leva ao modal de login e volta para o NFT.
-  await buyButton(page).click()
-  await expect(page).toHaveURL(/\/login\?redirect=/)
-  await login(page, DEMO, `/nfts/${NFT.emerald.id}`)
-
+  // Visitante compra sem login: o item vai para o carrinho dele; finalizar exige entrar.
   await buyButton(page).click()
   await expect(page).toHaveURL(/\/carrinho$/)
   // 1.19 + taxa de rede 0.016, em decimal exato (o resumo detalhado com a taxa só existe no layout desktop).
@@ -23,7 +19,13 @@ test("compra completa: mercado → login → carrinho → checkout → recibo co
   }
 
   await page.getByRole("link", { name: "Conectar e finalizar" }).click()
-  await expect(page).toHaveURL(/\/pagamento$/)
+  await expect(page).toHaveURL(/\/login\?redirect=%2Fpagamento/)
+  const dialog = page.getByRole("dialog", { name: "Entrar" })
+  await dialog.getByLabel("E-mail", { exact: true }).fill(DEMO.email)
+  await dialog.getByLabel("Senha", { exact: true }).fill(DEMO.password)
+  await dialog.getByRole("button", { name: "Entrar", exact: true }).click()
+  await expect(page).toHaveURL(/\/pagamento$/) // o item do visitante veio junto para a conta
+  await revealCollectorForm(page)
   await expect(page.getByLabel("Endereço da carteira")).toHaveValue(/^0xA91F/) // carteira principal já preenchida
   await confirmPurchase(page)
 

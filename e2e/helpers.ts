@@ -92,6 +92,17 @@ export async function apiOrders(page: Page): Promise<{ id: string; status: strin
   })
 }
 
+/** Total de unidades no carrinho segundo o "servidor" (visitante ou conta). */
+export async function apiCartUnits(page: Page): Promise<number> {
+  return page.evaluate(async () => {
+    const headers: Record<string, string> = { "X-Visitor-Id": localStorage.getItem("kurio:visitor") ?? "" }
+    const token = localStorage.getItem("kurio:token")
+    if (token) headers.Authorization = `Bearer ${token}`
+    const cart = await (await fetch("/api/cart", { headers })).json()
+    return (cart.items as { quantity: number }[]).reduce((sum, item) => sum + item.quantity, 0)
+  })
+}
+
 export function prices(texts: string[]): number[] {
   return texts.map((text) => Number(/(\d+\.\d+) ETH/.exec(text)?.[1]))
 }

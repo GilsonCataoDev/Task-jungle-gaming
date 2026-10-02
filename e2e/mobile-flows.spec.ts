@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { apiOrders, buyButton, confirmPurchase, DEMO, goToCheckout, login, logout, NFT, revealCollectorForm, waitForApp } from "./helpers"
+import { apiOrders, buyButton, confirmPurchase, DEMO, goToCheckout, logout, NFT, revealCollectorForm, waitForApp } from "./helpers"
 
 /**
  * Fluxos principais no layout mobile (projeto "mobile", 390px). As specs de catálogo, auth, conta, detalhe e a11y
@@ -8,8 +8,8 @@ import { apiOrders, buyButton, confirmPurchase, DEMO, goToCheckout, login, logou
  */
 test.describe("fluxos principais no mobile", () => {
   test("rota privada leva ao login e volta ao destino; menu inferior e logout", async ({ page }) => {
-    await page.goto("/carrinho")
-    await expect(page).toHaveURL(/\/login\?redirect=%2Fcarrinho/)
+    await page.goto("/perfil")
+    await expect(page).toHaveURL(/\/login\?redirect=%2Fperfil/)
     const dialog = page.getByRole("dialog", { name: "Entrar" })
     await dialog.getByLabel("E-mail", { exact: true }).fill(DEMO.email)
     await dialog.getByLabel("Senha", { exact: true }).fill("senha-errada")
@@ -17,13 +17,11 @@ test.describe("fluxos principais no mobile", () => {
     await expect(dialog.getByRole("alert")).toContainText("E-mail ou senha incorretos")
     await dialog.getByLabel("Senha", { exact: true }).fill(DEMO.password)
     await dialog.getByRole("button", { name: "Entrar", exact: true }).click()
-    await expect(page).toHaveURL(/\/carrinho$/)
-
-    await page.getByRole("link", { name: "Meu perfil" }).click()
+    await expect(page).toHaveURL(/\/perfil$/)
     await expect(page.getByRole("heading", { level: 1, name: "Perfil do colecionador", exact: true })).toBeVisible()
     await logout(page)
-    await page.goto("/carrinho")
-    await expect(page).toHaveURL(/\/login\?redirect=%2Fcarrinho/)
+    await page.goto("/perfil")
+    await expect(page).toHaveURL(/\/login\?redirect=%2Fperfil/)
     expect(await page.evaluate(() => localStorage.getItem("kurio:token"))).toBeNull()
   })
 
@@ -45,10 +43,11 @@ test.describe("fluxos principais no mobile", () => {
     await waitForApp(page)
     await page.getByRole("link", { name: `Ver ${NFT.emerald.name}` }).first().click()
     await expect(page.getByRole("heading", { level: 1, name: NFT.emerald.name })).toBeVisible()
-    await login(page, DEMO, `/nfts/${NFT.emerald.id}`)
-    await buyButton(page).click()
+    await buyButton(page).click() // visitante compra sem login: o carrinho é dele
     await expect(page).toHaveURL(/\/carrinho$/)
     await expect(page.getByText("1.206 ETH", { exact: true }).filter({ visible: true }).first()).toBeVisible()
+    await page.getByRole("link", { name: "Conectar e finalizar" }).click()
+    await expect(page).toHaveURL(/\/login\?redirect=%2Fpagamento/)
   })
 
   test("pagamento: dados do colecionador recolhidos, validação e compra", async ({ page }) => {

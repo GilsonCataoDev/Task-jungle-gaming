@@ -140,8 +140,8 @@ test.describe("autenticação (modal Entrar | Criar conta)", () => {
   test("logout encerra a sessão e protege as rotas privadas", async ({ page }) => {
     await login(page)
     await logout(page)
-    await page.goto("/carrinho")
-    await expect(page).toHaveURL(/\/login\?redirect=%2Fcarrinho/)
+    await page.goto("/perfil")
+    await expect(page).toHaveURL(/\/login\?redirect=%2Fperfil/)
     // O token também sumiu do navegador.
     expect(await page.evaluate(() => localStorage.getItem("kurio:token"))).toBeNull()
   })

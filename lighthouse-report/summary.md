@@ -5,15 +5,15 @@ URL: https://task-jungle-gaming.vercel.app
 
 | Página | Perfil | Performance | Acessibilidade | Boas práticas | SEO | LCP | CLS | TBT |
 |---|---|---|---|---|---|---|---|---|
-| Home | Mobile | 96 ✅ | 100 ✅ | 100 ✅ | 100 ✅ | 2.62 s | 0.000 | 56 ms |
-| Home | Desktop | 100 ✅ | 100 ✅ | 100 ✅ | 100 ✅ | 576 ms | 0.000 | 0 ms |
+| Home | Mobile | 96 ✅ | 100 ✅ | 100 ✅ | 100 ✅ | 2.69 s | 0.000 | 54 ms |
+| Home | Desktop | 100 ✅ | 100 ✅ | 100 ✅ | 100 ✅ | 578 ms | 0.000 | 0 ms |
 | Detalhe do NFT | Mobile | 97 ✅ | 100 ✅ | 100 ✅ | 100 ✅ | 2.46 s | 0.024 | 10 ms |
-| Detalhe do NFT | Desktop | 100 ✅ | 100 ✅ | 100 ✅ | 100 ✅ | 582 ms | 0.047 | 0 ms |
+| Detalhe do NFT | Desktop | 100 ✅ | 100 ✅ | 100 ✅ | 100 ✅ | 580 ms | 0.047 | 0 ms |
 
-- **Home · Mobile**: performance por medição = 93, 96, 96; FCP 1.71 s, Speed Index 1.71 s. Auditorias abaixo de 90: largest-contentful-paint (87), valid-source-maps (0), unused-javascript (0), lcp-discovery-insight (0), network-dependency-tree-insight (0), render-blocking-insight (50).
-- **Home · Desktop**: performance por medição = 100, 100, 100; FCP 416 ms, Speed Index 468 ms. Auditorias abaixo de 90: valid-source-maps (0), unused-javascript (0), image-delivery-insight (50), network-dependency-tree-insight (0), render-blocking-insight (50).
-- **Detalhe do NFT · Mobile**: performance por medição = 96, 97, 97; FCP 1.70 s, Speed Index 1.70 s. Auditorias abaixo de 90: valid-source-maps (0), unused-javascript (0), lcp-discovery-insight (0), network-dependency-tree-insight (0), render-blocking-insight (50).
-- **Detalhe do NFT · Desktop**: performance por medição = 100, 100, 100; FCP 418 ms, Speed Index 494 ms. Auditorias abaixo de 90: valid-source-maps (0), unused-javascript (0), network-dependency-tree-insight (0), render-blocking-insight (50).
+- **Home · Mobile**: performance por medição = 95, 96, 96; FCP 1.71 s, Speed Index 1.71 s. Auditorias abaixo de 90: largest-contentful-paint (86), valid-source-maps (0), unused-javascript (0), lcp-discovery-insight (0), network-dependency-tree-insight (0), render-blocking-insight (50).
+- **Home · Desktop**: performance por medição = 100, 100, 100; FCP 418 ms, Speed Index 469 ms. Auditorias abaixo de 90: valid-source-maps (0), unused-javascript (0), image-delivery-insight (50), network-dependency-tree-insight (0), render-blocking-insight (50).
+- **Detalhe do NFT · Mobile**: performance por medição = 97, 97, 96; FCP 1.70 s, Speed Index 1.70 s. Auditorias abaixo de 90: valid-source-maps (0), unused-javascript (0), lcp-discovery-insight (0), network-dependency-tree-insight (0), render-blocking-insight (50).
+- **Detalhe do NFT · Desktop**: performance por medição = 100, 100, 100; FCP 416 ms, Speed Index 512 ms. Auditorias abaixo de 90: valid-source-maps (0), unused-javascript (0), network-dependency-tree-insight (0), render-blocking-insight (50).
 
 ## Ambiente
 

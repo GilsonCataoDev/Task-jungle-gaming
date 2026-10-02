@@ -26,18 +26,18 @@
         "best-practices": 100,
         "seo": 100
       },
-      "lcp": 2621.299,
+      "lcp": 2690.609,
       "cls": 0,
-      "tbt": 56,
-      "fcp": 1710.299,
-      "si": 1710.299,
+      "tbt": 53.5,
+      "fcp": 1708.525,
+      "si": 1709.109,
       "allPerformanceScores": [
-        93,
+        95,
         96,
         96
       ],
       "failedAudits": [
-        "largest-contentful-paint (87)",
+        "largest-contentful-paint (86)",
         "valid-source-maps (0)",
         "unused-javascript (0)",
         "lcp-discovery-insight (0)",
@@ -56,11 +56,11 @@
         "best-practices": 100,
         "seo": 100
       },
-      "lcp": 575.788,
+      "lcp": 578.394,
       "cls": 0.000003753302037287242,
       "tbt": 0,
-      "fcp": 415.788,
-      "si": 467.9559624209213,
+      "fcp": 418.394,
+      "si": 469.4704848293741,
       "allPerformanceScores": [
         100,
         100,
@@ -85,15 +85,15 @@
         "best-practices": 100,
         "seo": 100
       },
-      "lcp": 2461.626,
+      "lcp": 2462.7039999999997,
       "cls": 0.02430133657351154,
       "tbt": 10,
-      "fcp": 1701.626,
-      "si": 1701.626,
+      "fcp": 1700.704,
+      "si": 1700.704,
       "allPerformanceScores": [
-        96,
         97,
-        97
+        97,
+        96
       ],
       "failedAudits": [
         "valid-source-maps (0)",
@@ -114,11 +114,11 @@
         "best-practices": 100,
         "seo": 100
       },
-      "lcp": 581.7935,
+      "lcp": 579.9005,
       "cls": 0.04674276834807554,
       "tbt": 0,
-      "fcp": 417.7935,
-      "si": 493.8998192457043,
+      "fcp": 415.90200000000004,
+      "si": 511.9560039126883,
       "allPerformanceScores": [
         100,
         100,

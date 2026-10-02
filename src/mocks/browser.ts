@@ -1,7 +1,7 @@
 import { setupWorker } from "msw/browser"
 import { handlers } from "./handlers"
 import { resetDb } from "./db"
-import { connectedCount, disconnectAll, publish } from "./realtime"
+import { connectedCount, disconnectAll, getDeliveries, publish, type Delivery } from "./realtime"
 import { applyScenarioFromUrl, getScenario, SCENARIOS, setScenario, type ScenarioName } from "./scenarios"
 import { updateNft } from "./logic"
 import type { NftUpdatedEvent, OrderUpdatedEvent } from "@/types/domain"
@@ -26,6 +26,8 @@ export type MockControls = {
   emit(event: "order.updated", payload: OrderUpdatedEvent): void
   disconnectSockets(): void
   connectedSockets(): number
+  /** O que o servidor entregou por socket e a quem (`to` = id do usuário da conexão, ou null para visitante). */
+  deliveries(): Delivery[]
 }
 
 export function installMockControls() {
@@ -46,6 +48,7 @@ export function installMockControls() {
     },
     disconnectSockets: disconnectAll,
     connectedSockets: connectedCount,
+    deliveries: getDeliveries,
   }
   ;(window as unknown as { __mocks: MockControls }).__mocks = controls
 }

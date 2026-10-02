@@ -55,6 +55,11 @@ export function applyOrderEvent(queryClient: QueryClient, event: OrderUpdatedEve
   return { type: "order", id: event.id, status: event.status }
 }
 
+/** Nova sessão (login/logout/troca de usuário): o que foi visto na anterior não vale para a próxima. */
+export function resetRealtimeState() {
+  seenVersions.clear()
+}
+
 /** Depois de reconectar, descarta o que o socket possa ter perdido e relê tudo via REST. */
 export function resync(queryClient: QueryClient) {
   seenVersions.clear()

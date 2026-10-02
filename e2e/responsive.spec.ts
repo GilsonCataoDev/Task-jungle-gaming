@@ -61,6 +61,30 @@ for (const { name, path, ready } of PAGES) {
   })
 }
 
+// Telas privadas do desafio com regressão visual: carrinho e pagamento (itens fixos, dados determinísticos).
+for (const [name, path, title] of [
+  ["carrinho", "/carrinho", "Carrinho de NFTs"],
+  ["pagamento", "/pagamento", "Pagamento com carteira"],
+] as const) {
+  test(`${name}: aparência estável (regressão visual)`, async ({ page }, testInfo) => {
+    await login(page, undefined, "/carrinho")
+    await page.evaluate(async () => {
+      const headers = { Authorization: `Bearer ${localStorage.getItem("kurio:token")}`, "Content-Type": "application/json" }
+      for (const nftId of ["emerald-ape-042", "violet-nomad-314"]) await fetch("/api/cart/items", { method: "POST", headers, body: JSON.stringify({ nftId }) })
+    })
+    await open(page, path, () => expect(page.getByRole("heading", { level: 1, name: title, exact: true })).toBeAttached())
+    await page.waitForLoadState("networkidle")
+    const file = `${name}-${testInfo.project.name}.png`
+    const mask = [page.getByTestId("connection-status")]
+    if (!existsSync(testInfo.snapshotPath(file))) {
+      await page.screenshot({ path: testInfo.snapshotPath(file), mask, scale: "css", caret: "hide", animations: "disabled" })
+      testInfo.annotations.push({ type: "baseline criada", description: `${process.platform}/${file}` })
+      return
+    }
+    await expect(page).toHaveScreenshot(file, { mask, maxDiffPixelRatio: 0.02 })
+  })
+}
+
 test("zoom de 200%: layout continua utilizável (equivale a 720px de largura)", async ({ page }) => {
   await page.setViewportSize({ width: 720, height: 800 })
   await open(page, "/", PAGES[0].ready)

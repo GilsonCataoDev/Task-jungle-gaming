@@ -93,7 +93,7 @@ Conexão: `wss://realtime.kurio.mock` (ou `VITE_SOCKET_URL`), path `/socket.io/`
   carrinho da conta e apaga o do visitante. Quem não tem nada no carrinho não paga essa chamada extra.
 - O carrinho **não congela preço**: o preço exibido é sempre o do catálogo naquele momento, e `expectedTotalEth` no
   pedido impede surpresas (409 `price_changed`).
-- Quantidade é limitada ao estoque. Depois de um pedido criado, o carrinho esvazia.
+- Quantidade é limitada ao estoque **e ao teto da edição** (`maxQuantity` em `types/domain.ts`: 1/1 = 1, 1/10 = 10, 1/50 = 50, ABERTA = sem teto). Cada NFT traz `unavailableEditions` (ex.: a 1/1 já vendida): a tela as desabilita e o servidor recusa com 409 `edition_unavailable`. A cotação marca `unavailable` quando a quantidade passa do limite da edição escolhida. Depois de um pedido criado, o carrinho esvazia.
 - `updatedAt` entra na chave da cotação, então mexer no carrinho refaz a cotação.
 - O cupom aplicado fica em `sessionStorage` (`kurio:coupon`) e acompanha o usuário do carrinho ao checkout.
 - Adicionar, alterar e remover são otimistas, com rollback.
@@ -159,7 +159,7 @@ MSW na hora (a rota precisa de `GET /auth/session` antes de pintar). Rotas ficam
 - O estado da conexão aparece num `role="status"` (só para leitores de tela quando "Ao vivo"; visível quando conectando ou reconectando).
 
 ## Mocks e cenários
-Banco em `localStorage` (`kurio:mock-db:v3`), semeado por fixtures determinísticas.
+Banco em `localStorage` (`kurio:mock-db:v4`), semeado por fixtures determinísticas.
 Controle: `?scenario=<nome>` na URL ou `window.__mocks` no console.
 
 | Cenário | Efeito |

@@ -37,11 +37,12 @@ Erros seguem sempre `{ "code": string, "message": string, "fields"?: { [campo]: 
 | `GET /favorites` 🔒 | | 200 `{ nftIds }` | |
 | `PUT /favorites/:nftId` 🔒 | | 200 `{ nftIds }` | 404 |
 | `DELETE /favorites/:nftId` 🔒 | | 200 `{ nftIds }` | |
-| `GET /cart` 🔒 | | 200 `Cart` = `{ items: [{ nft, quantity, edition }], updatedAt }` | |
-| `POST /cart/items` 🔒 | `{ nftId, quantity? = 1, edition? }` | 201 `Cart` | 404 · 409 `unavailable` |
-| `PATCH /cart/items/:nftId` 🔒 | `{ quantity }` (0 remove; limitado ao estoque) | 200 `Cart` | 404 · 422 |
-| `DELETE /cart/items/:nftId` 🔒 | | 200 `Cart` | |
-| `POST /quote` 🔒 | `{ coupon? }` | 200 `Quote` = `{ items, subtotalEth, discountEth, networkFeeEth, totalEth, coupon, issues[] }` | |
+| `GET /cart` (visitante ou 🔒) | | 200 `Cart` = `{ items: [{ nft, quantity, edition }], updatedAt }` | |
+| `POST /cart/items` (visitante ou 🔒) | `{ nftId, quantity? = 1, edition? }` | 201 `Cart` | 404 · 409 `unavailable` |
+| `PATCH /cart/items/:nftId` (visitante ou 🔒) | `{ quantity }` (0 remove; limitado ao estoque) | 200 `Cart` | 404 · 422 |
+| `DELETE /cart/items/:nftId` (visitante ou 🔒) | | 200 `Cart` | |
+| `POST /cart/merge` 🔒 | cabeçalho `X-Visitor-Id` | 200 `Cart` da conta, já com os itens do visitante (quantidades somadas, limitadas ao estoque) | 401 |
+| `POST /quote` (visitante ou 🔒) | `{ coupon? }` | 200 `Quote` = `{ items, subtotalEth, discountEth, networkFeeEth, totalEth, coupon, issues[] }` | |
 | `POST /orders` 🔒 | header **`Idempotency-Key`** + `{ walletId, provider, collector, coupon, expectedTotalEth }` | 201 `Order` (novo) · 200 `Order` + `Idempotent-Replayed: true` (repetição) | 400 `idempotency_key_required` · 409 `idempotency_conflict` · 409 `empty_cart` · 409 `inventory_conflict` · 409 `price_changed` · 422 `invalid_coupon` / `validation_error` (fields do `collector`) · 402 `payment_rejected` |
 | `GET /orders` 🔒 | | 200 `{ items }` (mais recentes primeiro) | |
 | `GET /orders/:id` 🔒 | | 200 `Order` | 404 (também para pedido de outro usuário: não revela que existe) |
@@ -84,8 +85,12 @@ Conexão: `wss://realtime.kurio.mock` (ou `VITE_SOCKET_URL`), path `/socket.io/`
 - `redirect` só aceita caminhos internos (`/...`), nunca URLs externas.
 
 ## Estado do carrinho
-- Vive no servidor, **por usuário**: linhas `{ nftId, quantity, edition }` + `updatedAt`. O carrinho exige login
-  (visitante que tenta comprar vai ao modal de login e volta para o NFT).
+- Vive no servidor, **por dono**: linhas `{ nftId, quantity, edition }` + `updatedAt`. Logado, o dono é o usuário;
+  visitante, o dono é o navegador (`X-Visitor-Id`, id gerado e guardado em `localStorage`). O visitante monta o
+  carrinho sem login, e ele sobrevive ao refresh. Só o pagamento (e pedidos, perfil, carteiras e favoritos) exige login.
+- **Mesclagem no login/cadastro:** se o visitante mexeu no carrinho (`kurio:guest-cart`), o cliente chama
+  `POST /cart/merge` antes de marcar a sessão como ativa; o servidor soma as quantidades (limitadas ao estoque) ao
+  carrinho da conta e apaga o do visitante. Quem não tem nada no carrinho não paga essa chamada extra.
 - O carrinho **não congela preço**: o preço exibido é sempre o do catálogo naquele momento, e `expectedTotalEth` no
   pedido impede surpresas (409 `price_changed`).
 - Quantidade é limitada ao estoque. Depois de um pedido criado, o carrinho esvazia.
@@ -195,6 +200,7 @@ Contra o servidor de dev: `PW_BASE_URL=http://localhost:5173 npx playwright test
 |---|---|
 | `catalog.spec.ts` | busca, filtros combinados (coleção, rede, preço), ordenação, abas, paginação e restauração pelo histórico; carrossel do herói |
 | `details.spec.ts` | acesso direto, galeria, edições e abas, recurso inexistente, 404, rota privada, esgotado, falha e nova tentativa |
+| `cart.spec.ts` | carrinho do visitante (quantidade, remoção, persistência após refresh) e mesclagem com a conta ao entrar |
 | `auth.spec.ts` | cadastro, login (modal), sessão expirada, token antigo, logout e troca de usuário sem vazamento |
 | `favorites.spec.ts` | favoritos otimistas, falha de mutação com rollback, lista de interesse |
 | `purchase.spec.ts` | compra completa até o recibo (modal) |

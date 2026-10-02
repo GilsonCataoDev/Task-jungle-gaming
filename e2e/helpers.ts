@@ -45,15 +45,30 @@ export async function login(page: Page, user: { email: string; password: string 
   await expect(page).toHaveURL((url) => url.pathname + url.search === redirect)
 }
 
+/** Abaixo de 768px o layout é o mobile (menu inferior, formulário do checkout recolhido). */
+export const isNarrow = (page: Page) => (page.viewportSize()?.width ?? 1440) < 768
+
+/** No mobile o formulário "Perfil do colecionador" vem recolhido; no desktop não faz nada. */
+export async function revealCollectorForm(page: Page) {
+  const toggle = page.getByRole("button", { name: "Revisar dados do colecionador" })
+  if (await toggle.isVisible()) await toggle.click()
+}
+
 export async function logout(page: Page) {
-  await page.getByRole("button", { name: "Sair", exact: true }).first().click()
+  // No mobile não há "Sair" no cabeçalho: ele fica no menu do perfil.
+  const exit = page.getByRole("button", { name: "Sair", exact: true }).filter({ visible: true })
+  if ((await exit.count()) === 0) await page.goto("/perfil")
+  await exit.first().click()
   await expect(page.getByRole("link", { name: "Entrar" }).first()).toBeVisible()
 }
+
+/** "Comprar" no desktop; "Comprar NFT" na barra fixa do mobile. Só um dos dois aparece por viewport. */
+export const buyButton = (page: Page) => page.getByRole("button", { name: /^Comprar( NFT)?$/ }).filter({ visible: true })
 
 /** Abre o NFT, escolhe "Comprar" e cai no carrinho. */
 export async function addToCartFromDetail(page: Page, nftId: string) {
   await page.goto(`/nfts/${nftId}`)
-  await page.getByRole("button", { name: "Comprar", exact: true }).click()
+  await buyButton(page).click()
   await expect(page).toHaveURL(/\/carrinho$/)
 }
 

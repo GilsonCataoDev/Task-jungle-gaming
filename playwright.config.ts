@@ -21,16 +21,19 @@ export default defineConfig({
   expect: { toHaveScreenshot: { maxDiffPixelRatio: 0.01, animations: "disabled" } },
   use: {
     baseURL,
-    trace: "on-first-retry",
+    trace: "retain-on-failure",
     reducedMotion: "reduce",
     locale: "pt-BR",
     // Usa o Chrome instalado se PW_CHANNEL=chrome; senão, o Chromium do Playwright.
     channel: process.env.PW_CHANNEL || undefined,
   },
   projects: [
-    { name: "desktop", use: { ...devices["Desktop Chrome"], viewport: { width: 1440, height: 900 } } },
+    { name: "desktop", testIgnore: /mobile-flows\.spec\.ts/, use: { ...devices["Desktop Chrome"], viewport: { width: 1440, height: 900 } } },
     { name: "tablet", testMatch: /responsive\.spec\.ts/, use: { ...devices["Desktop Chrome"], viewport: { width: 768, height: 1024 } } },
-    { name: "mobile", testMatch: /responsive\.spec\.ts/, use: { ...devices["Pixel 7"], viewport: { width: 390, height: 844 } } },
+    // Mobile: fluxos principais (compra, checkout, falhas, tempo real, resiliência, lentidão) + a spec dedicada.
+    // As specs de catálogo/auth/conta/detalhe/a11y exercitam a interface desktop (filtros laterais, teclado) e rodam só lá;
+    // o equivalente mobile está em mobile-flows.spec.ts.
+    { name: "mobile", testIgnore: /(a11y|account|auth|catalog|details)\.spec\.ts/, use: { ...devices["Pixel 7"], viewport: { width: 390, height: 844 } } },
   ],
   webServer: externalBaseUrl
     ? undefined

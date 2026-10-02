@@ -1,9 +1,10 @@
 import { expect, test } from "@playwright/test"
-import { addToCartFromDetail, apiOrders, confirmPurchase, FEE, goToCheckout, login, NFT, setScenario, shown } from "./helpers"
+import { addToCartFromDetail, apiOrders, confirmPurchase, FEE, goToCheckout, isNarrow, login, NFT, revealCollectorForm, setScenario, shown } from "./helpers"
 
 test.describe("checkout e falhas de pagamento", () => {
   test("o formulário vem preenchido com a carteira principal e a conta", async ({ page }) => {
     await goToCheckout(page)
+    await revealCollectorForm(page)
     const main = page.getByRole("main")
     await expect(main.getByLabel("Nome de exibição")).toHaveValue("Nova Sato")
     await expect(main.getByLabel("Nome de usuário")).toHaveValue("novasato")
@@ -11,13 +12,16 @@ test.describe("checkout e falhas de pagamento", () => {
     await expect(main.getByLabel("Tipo de carteira")).toHaveValue("MetaMask")
     await expect(main.getByLabel("Código de indicação")).toHaveValue("KURIO-NOVA")
     await expect(main.getByRole("radio", { name: "MetaMask" })).toBeChecked()
-    // Lista os NFTs e usa a taxa estimada do Figma.
-    await expect(shown(main.getByText(NFT.emerald.name)).first()).toBeVisible()
-    await expect(shown(main.getByText(`${FEE} ETH`, { exact: true })).first()).toBeVisible()
+    // Lista os NFTs e usa a taxa estimada do Figma (a lista de itens só existe no layout desktop).
+    if (!isNarrow(page)) {
+      await expect(shown(main.getByText(NFT.emerald.name)).first()).toBeVisible()
+      await expect(shown(main.getByText(`${FEE} ETH`, { exact: true })).first()).toBeVisible()
+    }
   })
 
   test("'Usar outra carteira?' troca os dados para a carteira secundária e o recibo mostra a carteira escolhida", async ({ page }) => {
     await goToCheckout(page)
+    await revealCollectorForm(page)
     const main = page.getByRole("main")
     await main.getByRole("checkbox", { name: /Usar outra carteira/ }).check()
     await expect(main.getByLabel("Endereço da carteira")).toHaveValue(/^0x3C9a/)
@@ -131,6 +135,7 @@ test.describe("checkout e falhas de pagamento", () => {
 
   test("validação do formulário do colecionador (cliente e servidor)", async ({ page }) => {
     await goToCheckout(page)
+    await revealCollectorForm(page)
     const main = page.getByRole("main")
     await main.getByLabel("Nome de exibição").fill("")
     await main.getByLabel("Código de indicação").fill("")
@@ -154,7 +159,7 @@ test.describe("checkout e falhas de pagamento", () => {
     await expect(page.getByText("1.087 ETH", { exact: true })).toBeVisible() // 1.19 - 0.119 + 0.016
 
     await page.getByRole("link", { name: "Conectar e finalizar" }).click()
-    await expect(shown(page.getByText("(-) 0.119")).first()).toBeVisible() // o cupom acompanha até o checkout
+    if (!isNarrow(page)) await expect(shown(page.getByText("(-) 0.119")).first()).toBeVisible() // o cupom acompanha até o checkout (o resumo detalhado é só desktop)
     await confirmPurchase(page)
     await expect(page.getByRole("dialog", { name: "Recibo do pedido" }).getByText("1.087 ETH").first()).toBeVisible({ timeout: 10_000 })
 

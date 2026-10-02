@@ -7,33 +7,39 @@
     "best-practices": 95,
     "seo": 90
   },
+  "environment": {
+    "lighthouse": "13.5.0",
+    "chrome": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+    "node": "v24.18.0",
+    "os": "Windows_NT 10.0.26300 (x64), 12 CPUs",
+    "chromeLauncher": "1.2.2"
+  },
   "rows": [
     {
       "page": "Home",
       "profile": "Mobile",
       "runs": 3,
+      "conditions": "mobile; throttling simulate; CPU 4x; rede 150 ms RTT / 1638 kbps",
       "scores": {
-        "performance": 95,
+        "performance": 96,
         "accessibility": 100,
         "best-practices": 100,
         "seo": 100
       },
-      "lcp": 2685.706,
+      "lcp": 2621.299,
       "cls": 0,
-      "tbt": 79.5,
-      "fcp": 1729.7060000000001,
-      "si": 2673.8743390770956,
+      "tbt": 56,
+      "fcp": 1710.299,
+      "si": 1710.299,
       "allPerformanceScores": [
-        94,
-        95,
+        93,
+        96,
         96
       ],
       "failedAudits": [
-        "largest-contentful-paint (86)",
-        "max-potential-fid (84)",
+        "largest-contentful-paint (87)",
         "valid-source-maps (0)",
         "unused-javascript (0)",
-        "image-delivery-insight (50)",
         "lcp-discovery-insight (0)",
         "network-dependency-tree-insight (0)",
         "render-blocking-insight (50)"
@@ -43,17 +49,18 @@
       "page": "Home",
       "profile": "Desktop",
       "runs": 3,
+      "conditions": "desktop; throttling simulate; CPU 1x; rede 40 ms RTT / 10240 kbps",
       "scores": {
         "performance": 100,
         "accessibility": 100,
         "best-practices": 100,
         "seo": 100
       },
-      "lcp": 578.763,
+      "lcp": 575.788,
       "cls": 0.000003753302037287242,
       "tbt": 0,
-      "fcp": 418.76300000000003,
-      "si": 467.3199583402907,
+      "fcp": 415.788,
+      "si": 467.9559624209213,
       "allPerformanceScores": [
         100,
         100,
@@ -71,17 +78,18 @@
       "page": "Detalhe do NFT",
       "profile": "Mobile",
       "runs": 3,
+      "conditions": "mobile; throttling simulate; CPU 4x; rede 150 ms RTT / 1638 kbps",
       "scores": {
         "performance": 97,
         "accessibility": 100,
         "best-practices": 100,
         "seo": 100
       },
-      "lcp": 2466.966,
+      "lcp": 2461.626,
       "cls": 0.02430133657351154,
-      "tbt": 26,
-      "fcp": 1704.1689999999999,
-      "si": 1704.1689999999999,
+      "tbt": 10,
+      "fcp": 1701.626,
+      "si": 1701.626,
       "allPerformanceScores": [
         96,
         97,
@@ -99,17 +107,18 @@
       "page": "Detalhe do NFT",
       "profile": "Desktop",
       "runs": 3,
+      "conditions": "desktop; throttling simulate; CPU 1x; rede 40 ms RTT / 10240 kbps",
       "scores": {
         "performance": 100,
         "accessibility": 100,
         "best-practices": 100,
         "seo": 100
       },
-      "lcp": 583.9404999999999,
+      "lcp": 581.7935,
       "cls": 0.04674276834807554,
       "tbt": 0,
-      "fcp": 418.9405,
-      "si": 505.3128750822489,
+      "fcp": 417.7935,
+      "si": 493.8998192457043,
       "allPerformanceScores": [
         100,
         100,

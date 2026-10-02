@@ -2,6 +2,7 @@ import { http, HttpResponse } from "msw"
 import type { User, Wallet, WalletInput } from "@/types/domain"
 import { db, mutate, nextId } from "../db"
 import { beginAuth, fail } from "../http"
+import { hashPassword, verifyPassword } from "../password"
 import { EMAIL_REGEX, validateWallet } from "../validation"
 import { toPublicUser } from "./auth"
 
@@ -91,11 +92,12 @@ export const accountHandlers = [
     const ctx = await beginAuth(request, { mutation: true })
     if (ctx instanceof Response) return ctx
     const body = (await request.json()) as { currentPassword?: string; newPassword?: string }
-    if (body.currentPassword !== ctx.user.password) return validation({ currentPassword: "Senha atual incorreta." })
+    if (!body.currentPassword || !(await verifyPassword(body.currentPassword, ctx.user.passwordHash))) return validation({ currentPassword: "Senha atual incorreta." })
     if (!body.newPassword || body.newPassword.length < 8) return validation({ newPassword: "A nova senha precisa ter ao menos 8 caracteres." })
     if (body.newPassword === body.currentPassword) return validation({ newPassword: "A nova senha deve ser diferente da atual." })
+    const passwordHash = await hashPassword(body.newPassword)
     mutate((state) => {
-      state.users.find((item) => item.id === ctx.user.id)!.password = body.newPassword!
+      state.users.find((item) => item.id === ctx.user.id)!.passwordHash = passwordHash
     })
     return new HttpResponse(null, { status: 204 })
   }),

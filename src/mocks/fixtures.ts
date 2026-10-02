@@ -7,15 +7,16 @@ export type StoredUser = {
   name: string
   username: string
   email: string
-  password: string
+  /** `pbkdf2$<sal>$<hash>` (ver mocks/password.ts). Nunca a senha em claro. */
+  passwordHash: string
   avatarUrl: string | null
   ens: string
   walletNickname: string
 }
 
 export const FIXTURE_USERS: StoredUser[] = [
-  { id: "u_demo", name: "Nova Sato", username: "novasato", email: "demo@kurio.dev", password: "Demo@1234", avatarUrl: null, ens: "nova", walletNickname: "Principal" },
-  { id: "u_maya", name: "Maya Lin", username: "mayalin", email: "maya@kurio.dev", password: "Maya@1234", avatarUrl: null, ens: "maya", walletNickname: "Principal" },
+  { id: "u_demo", name: "Nova Sato", username: "novasato", email: "demo@kurio.dev", passwordHash: "pbkdf2$0413c4c8e043610154cc7f4f1e8efdd6$ea66bc78f098fd122f40141229080be12bfb61eab8c0865b9354bc5689927085", avatarUrl: null, ens: "nova", walletNickname: "Principal" },
+  { id: "u_maya", name: "Maya Lin", username: "mayalin", email: "maya@kurio.dev", passwordHash: "pbkdf2$e10c3adcf1baeac20401d762ecfab064$cfa85a3ed94dc5587263ff5955a2bd53cb23ef522cf6e7f3546af5dc27f72e3a", avatarUrl: null, ens: "maya", walletNickname: "Principal" },
 ]
 
 export const FIXTURE_WALLETS: Record<string, Wallet[]> = {

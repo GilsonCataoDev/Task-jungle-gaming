@@ -1,7 +1,7 @@
 import type { Edition, Nft, Order, Wallet } from "@/types/domain"
 import { FIXTURE_NFTS, FIXTURE_USERS, FIXTURE_WALLETS, type StoredUser } from "./fixtures"
 
-const DB_KEY = "kurio:mock-db:v2"
+const DB_KEY = "kurio:mock-db:v3"
 const SESSION_TTL_MS = 30 * 60 * 1000
 
 export type StoredOrder = Order & { userId: string }

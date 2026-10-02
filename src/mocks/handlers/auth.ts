@@ -3,6 +3,7 @@ import type { AuthResponse, Session } from "@/types/domain"
 import { createSession, db, mutate, nextId } from "../db"
 import type { StoredUser } from "../fixtures"
 import { beginAuth, beginPublic, fail } from "../http"
+import { hashPassword, verifyPassword } from "../password"
 import { EMAIL_REGEX } from "../validation"
 
 export const toPublicUser = ({ id, name, username, email, avatarUrl, ens, walletNickname }: StoredUser) => ({ id, name, username, email, avatarUrl, ens, walletNickname })
@@ -26,7 +27,7 @@ export const authHandlers = [
     }
 
     const username = body.username!.trim()
-    const user: StoredUser = { id: `u_${nextId("user")}`, name: username, username, email, password: body.password!, avatarUrl: null, ens: "", walletNickname: "" }
+    const user: StoredUser = { id: `u_${nextId("user")}`, name: username, username, email, passwordHash: await hashPassword(body.password!), avatarUrl: null, ens: "", walletNickname: "" }
     mutate((state) => {
       state.users.push(user)
       state.favorites[user.id] = []
@@ -45,7 +46,7 @@ export const authHandlers = [
     if (!body.email || !body.password) return fail(422, "validation_error", "Preencha e-mail e senha.", { email: body.email ? "" : "Informe seu e-mail.", password: body.password ? "" : "Informe sua senha." })
 
     const user = db().users.find((item) => item.email === body.email!.toLowerCase())
-    if (!user || user.password !== body.password) return fail(401, "invalid_credentials", "E-mail ou senha incorretos.")
+    if (!user || !(await verifyPassword(body.password, user.passwordHash))) return fail(401, "invalid_credentials", "E-mail ou senha incorretos.")
 
     const { token, expiresAt } = createSession(user.id)
     const response: AuthResponse = { token, user: toPublicUser(user), expiresAt }

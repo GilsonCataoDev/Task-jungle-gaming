@@ -160,6 +160,8 @@ Controle: `?scenario=<nome>` na URL ou `window.__mocks` no console.
 | Cenário | Efeito |
 |---|---|
 | `slow` | respostas em ~2,5 s |
+| `variable-latency` | latência 80 ms a 1,7 s, decrescente: respostas fora de ordem (o cliente cancela e descarta as velhas) |
+| `offline` | falha de conexão (erro de rede, sem resposta HTTP) |
 | `timeout` | 1x: pedido criado, resposta só após o timeout do cliente |
 | `server-error` | 503 em tudo |
 | `mutation-error` | 500 nas mutações (testa rollback) |
@@ -173,7 +175,7 @@ Esses controles agem no *servidor* simulado; a UI só descobre as mudanças por 
 
 ## Credenciais fictícias
 `demo@kurio.dev` / `Demo@1234` (Nova Sato) · `maya@kurio.dev` / `Maya@1234` (Maya Lin)
-Cupons: `KURIO10` (10%), `WELCOME` (0.05 ETH). Taxa de rede fixa: 0.016 ETH ("taxa estimada").
+Cupons: `KURIO10` (10%), `WELCOME` (0.05 ETH), `NATAL20` (expirado: "Cupom expirado"); código desconhecido: "Cupom inválido". Taxa de rede fixa: 0.016 ETH ("taxa estimada").
 
 ## Design
 Tokens extraídos dos prints do Figma, definidos em `src/index.css` (`:root`) e mapeados no tema do Tailwind/shadcn:

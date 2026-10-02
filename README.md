@@ -43,7 +43,7 @@ suporte ao ESLint 10, mas funciona), então `npm install` e `npm ci` não precis
 | Nova Sato | `demo@kurio.dev` | `Demo@1234` | 2 carteiras (Principal/Ethereum e Reserva/Polygon), 1 favorito, criadora de 9 NFTs (pode editá-los) |
 | Maya Lin | `maya@kurio.dev` | `Maya@1234` | 1 carteira, sem favoritos |
 
-Também dá para criar uma conta em `/cadastro`. Cupons: `KURIO10` (10%) e `WELCOME` (0,05 ETH).
+Também dá para criar uma conta em `/cadastro`. Cupons: `KURIO10` (10%) e `WELCOME` (0,05 ETH); `NATAL20` existe, mas está **expirado** (mostra "Cupom expirado"); qualquer outro código dá "Cupom inválido".
 Não há cartão: o pagamento é por **carteira** (MetaMask, WalletConnect ou Coinbase Wallet). Para simular uma
 carteira que recusa a transação, use o cenário `payment-rejected` (abaixo).
 
@@ -86,6 +86,8 @@ Os mocks têm cenários configuráveis. Escolha de duas formas:
 |---|---|---|
 | `normal` | Comportamento padrão (latência de 60 ms) | — |
 | `slow` | Todas as respostas levam ~2,5 s | `?scenario=slow` e abra o mercado: aparecem os esqueletos |
+| `variable-latency` | Latência de 80 ms a 1,7 s em sequência fixa e decrescente: as respostas chegam **fora de ordem** | `?scenario=variable-latency`, clique em duas categorias seguidas: a tela mantém só o resultado da última |
+| `offline` | Falha de conexão: a requisição não chega ao servidor (erro de rede, sem status HTTP) | `?scenario=offline`: o mercado mostra "Sem conexão com o servidor"; volte a `normal` e use "Tentar novamente" |
 | `timeout` | **1x:** o pedido é criado, mas a resposta chega depois do timeout do cliente | Defina o cenário, confirme a compra, espere ~8 s: surge "Tentar novamente" e repetir recupera **o mesmo pedido** |
 | `server-error` | 503 em tudo (exceto sessão) | `?scenario=server-error`: o mercado mostra o erro com "Tentar novamente" |
 | `mutation-error` | 500 nas mutações (favoritos, carrinho, perfil, carteiras) | Favorite um NFT: o coração volta atrás e aparece o aviso |
@@ -123,7 +125,7 @@ reconectar, o REST volta a ser a fonte da verdade. O transporte simulado e suas 
 
 ## Testes
 
-`npm run test:e2e` roda **149 testes** em 3 projetos: desktop (1440, todos os cenários), tablet (768, só a spec responsiva) e mobile
+`npm run test:e2e` roda **153 testes** em 3 projetos: desktop (1440, todos os cenários), tablet (768, só a spec responsiva) e mobile
 (390, os fluxos principais: compra, checkout e falhas de pagamento, tempo real, resiliência, lentidão e a spec
 `mobile-flows.spec.ts`; as specs de catálogo, auth, conta, detalhe e a11y usam a interface desktop e rodam só lá).
 Falhas guardam trace (`retain-on-failure`) e o relatório HTML sai em `playwright-report/`. Cada teste abre um contexto limpo, então o banco simulado nasce das

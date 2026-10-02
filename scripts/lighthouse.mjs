@@ -10,7 +10,8 @@
  *   LH_BASE_URL=https://meu-deploy.app npm run lighthouse   # audita um deploy
  */
 import { spawn, spawnSync } from "node:child_process"
-import { mkdirSync, writeFileSync } from "node:fs"
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs"
+import os from "node:os"
 import { launch } from "chrome-launcher"
 import lighthouse from "lighthouse"
 import desktopConfig from "lighthouse/core/config/desktop-config.js"
@@ -71,6 +72,10 @@ function stopServer() {
   else previewServer.kill()
 }
 
+let environment
+const describeSettings = (settings) =>
+  `${settings.formFactor}; throttling ${settings.throttlingMethod}; CPU ${settings.throttling.cpuSlowdownMultiplier}x; rede ${settings.throttling.rttMs} ms RTT / ${Math.round(settings.throttling.throughputKbps)} kbps`
+
 /** Um Chrome novo por medição: cache frio em todas, sem estado vazando entre execuções. */
 async function measure(url, profile) {
   const chrome = await launch({ chromeFlags: ["--headless=new", "--no-sandbox", "--disable-gpu"] })
@@ -79,7 +84,15 @@ async function measure(url, profile) {
     const { lhr, report } = result
     const score = (id) => Math.round((lhr.categories[id].score ?? 0) * 100)
     const metric = (id) => lhr.audits[id].numericValue
+    environment ??= {
+      lighthouse: lhr.lighthouseVersion,
+      chrome: lhr.environment.hostUserAgent,
+      node: process.version,
+      os: `${os.type()} ${os.release()} (${os.arch()}), ${os.cpus().length} CPUs`,
+      chromeLauncher: JSON.parse(readFileSync("node_modules/chrome-launcher/package.json", "utf8")).version,
+    }
     return {
+      conditions: describeSettings(lhr.configSettings),
       scores: Object.fromEntries(CATEGORIES.map((id) => [id, score(id)])),
       lcp: metric("largest-contentful-paint"),
       cls: metric("cumulative-layout-shift"),
@@ -123,6 +136,7 @@ async function main() {
         page: page.label,
         profile: profile.label,
         runs: RUNS,
+        conditions: representative.conditions,
         scores: Object.fromEntries(CATEGORIES.map((id) => [id, median(runs.map((run) => run.scores[id]))])),
         lcp: median(runs.map((run) => run.lcp)),
         cls: median(runs.map((run) => run.cls)),
@@ -143,9 +157,16 @@ async function main() {
   const details = rows
     .map((row) => `- **${row.page} · ${row.profile}**: performance por medição = ${row.allPerformanceScores.join(", ")}; FCP ${fmtMs(row.fcp)}, Speed Index ${fmtMs(row.si)}.${row.failedAudits.length ? ` Auditorias abaixo de 90: ${row.failedAudits.join(", ")}.` : ""}`)
     .join("\n")
-  const markdown = `# Lighthouse (mediana de ${RUNS} medições)\n\nAlvo: Performance ≥ ${TARGETS.performance}, Acessibilidade ≥ ${TARGETS.accessibility}, Boas práticas ≥ ${TARGETS["best-practices"]}, SEO ≥ ${TARGETS.seo}.\nURL: ${BASE_URL}\n\n${header}\n${lines.join("\n")}\n\n${details}\n`
+  const conditions = rows.map((row) => `- ${row.page} · ${row.profile}: ${row.conditions}`).join("\n")
+  const env = [
+    `- Lighthouse ${environment.lighthouse}; chrome-launcher ${environment.chromeLauncher}`,
+    `- Chrome: ${environment.chrome}`,
+    `- Node ${environment.node}; ${environment.os}`,
+    `- Chrome novo (cache frio) a cada medição, headless; ${EXTERNAL ? "deploy público" : "build de produção servido por vite preview"}; cenário padrão dos mocks`,
+  ].join("\n")
+  const markdown = `# Lighthouse (mediana de ${RUNS} medições)\n\nAlvo: Performance ≥ ${TARGETS.performance}, Acessibilidade ≥ ${TARGETS.accessibility}, Boas práticas ≥ ${TARGETS["best-practices"]}, SEO ≥ ${TARGETS.seo}.\nURL: ${BASE_URL}\n\n${header}\n${lines.join("\n")}\n\n${details}\n\n## Ambiente\n\n${env}\n\n## Condições por perfil\n\n${conditions}\n`
   writeFileSync(`${OUT_DIR}/summary.md`, markdown)
-  writeFileSync(`${OUT_DIR}/summary.json`, JSON.stringify({ baseUrl: BASE_URL, runs: RUNS, targets: TARGETS, rows }, null, 2))
+  writeFileSync(`${OUT_DIR}/summary.json`, JSON.stringify({ baseUrl: BASE_URL, runs: RUNS, targets: TARGETS, environment, rows }, null, 2))
   console.log(`\n${markdown}`)
 
   const missed = rows.filter((row) => CATEGORIES.some((id) => row.scores[id] < TARGETS[id]))

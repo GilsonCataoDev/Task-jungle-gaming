@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Fonte do corpo: baixa em paralelo com o JS, fora da cascata HTML -> CSS -> fonte. -->
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/node_modules/@fontsource-variable/roboto-mono/files/roboto-mono-latin-wght-normal.woff2" />
+    <!-- Arte do herói (LCP no desktop): descoberta já no HTML, sem esperar o React montar. -->
+    <link rel="preload" as="image" type="image/webp" fetchpriority="high" media="(min-width: 768px)" href="/src/assets/nfts/emerald-ape.webp" />
+    <title>Kurio - Marketplace de NFTs</title>
+    <meta name="description" content="Kurio: descubra, colecione e compre arte digital rara de criadores emergentes e consagrados." />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

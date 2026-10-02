@@ -1,0 +1,56 @@
+name: Baselines visuais (Linux e macOS)
+
+# Gera as baselines da regressão visual em Linux e macOS de verdade (a renderização de fonte muda entre sistemas)
+# e as grava em e2e/__screenshots__/<linux|darwin>/. Rode manualmente: Actions > Baselines visuais > Run workflow.
+on: workflow_dispatch
+
+permissions:
+  contents: write
+
+jobs:
+  baselines:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: linux
+          - os: macos-latest
+            platform: darwin
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      # 1ª execução cria as baselines deste sistema; a 2ª confirma que elas são estáveis (sem diferença entre execuções).
+      - run: npx playwright test --grep "regressão visual"
+      - run: npx playwright test --grep "regressão visual"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: baselines-${{ matrix.platform }}
+          path: e2e/__screenshots__/${{ matrix.platform }}
+          if-no-files-found: error
+
+  commit:
+    needs: baselines
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: downloaded
+      - name: Grava as baselines
+        run: |
+          for platform in linux darwin; do
+            mkdir -p "e2e/__screenshots__/$platform"
+            cp -r "downloaded/baselines-$platform/." "e2e/__screenshots__/$platform/"
+          done
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add e2e/__screenshots__
+          git diff --cached --quiet || git commit -m "test(e2e): baselines visuais de Linux e macOS"
+          git push

@@ -226,6 +226,11 @@ Baselines visuais ficam em `e2e/__screenshots__/<sistema>/<projeto>/`. Como a fo
 - Só existem baselines visuais de Windows (`win32`); em Linux/macOS elas são criadas na primeira execução, então a regressão visual só protege a partir da segunda.
 - Performance do Início no mobile fica em 88 no build local e 93 no deploy da Vercel (ver o README: o LCP depende do MSW subir no navegador).
 
+## Segurança
+- Cabeçalhos no `vercel.json`: CSP restritiva (só a própria origem; `style-src-attr 'unsafe-inline'` apenas para os atributos `style` do React), `nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy` e `Permissions-Policy`.
+- Sem `dangerouslySetInnerHTML`/`eval`; links externos com `rel="noopener noreferrer"`; `npm audit` sem vulnerabilidades.
+- **O que mudaria com um backend real:** o token de sessão está no `localStorage` (qualquer XSS o leria); o correto é cookie `HttpOnly; Secure; SameSite`. As senhas do banco simulado ficam em texto puro porque são dados de demonstração no navegador; num servidor real seriam guardadas com hash (argon2/bcrypt), com limite de tentativas de login.
+
 ## Desvios do Figma
 O design foi implementado a partir de **prints** das telas (desktop 1440 e mobile 390); o arquivo do Figma em si não
 pôde ser inspecionado (sem medidas exatas), então espaçamentos, raios e tamanhos foram medidos nos prints.

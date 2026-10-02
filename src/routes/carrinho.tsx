@@ -12,6 +12,7 @@ import { useQuote } from "@/features/checkout/hooks"
 import { Totals } from "@/features/checkout/totals"
 import { nftListQuery } from "@/features/nfts/queries"
 import { getApiError } from "@/lib/api"
+import { maxQuantity } from "@/types/domain"
 import { formatEth } from "@/lib/format"
 import { mulEth } from "@/lib/money"
 import { cn } from "@/lib/utils"
@@ -82,13 +83,13 @@ function CartPage() {
                       <h2 className="truncate text-base"><Link to="/nfts/$nftId" params={{ nftId: nft.id }} className="hover:text-primary">{nft.name}</Link></h2>
                       <p className="text-xs text-tan max-md:hidden">ID do token: {nft.tokenId}</p>
                       <p className="text-xs text-tan md:hidden">Edição: {edition}</p>
-                      {unavailable.has(nft.id) && <p role="alert" className="mt-1 text-xs text-destructive">Só há {nft.available} disponível(is). Ajuste a quantidade.</p>}
+                      {unavailable.has(nft.id) && <p role="alert" className="mt-1 text-xs text-destructive">Só há {maxQuantity(nft, edition)} disponível(is) na edição {edition}. Ajuste a quantidade.</p>}
                     </div>
                   </div>
                   <p className="font-bold text-primary md:hidden">{formatEth(nft.priceEth, 2)}</p>
                   <p className="max-md:hidden">{formatEth(nft.priceEth, 2)}</p>
                   <div className="flex items-center justify-between gap-3 md:contents">
-                    <Stepper value={quantity} onChange={(next) => update.mutate({ nftId: nft.id, quantity: next })} min={0} max={nft.available} size="sm" label={`Quantidade de ${nft.name}`} />
+                    <Stepper value={quantity} onChange={(next) => update.mutate({ nftId: nft.id, quantity: next })} min={0} max={maxQuantity(nft, edition)} size="sm" label={`Quantidade de ${nft.name}`} />
                     <p className="font-bold text-primary max-md:hidden">{formatEth(mulEth(nft.priceEth, quantity), 2)}</p>
                     <button type="button" onClick={() => remove.mutate(nft.id)} aria-label={`Remover ${nft.name}`} className="grid size-8 place-items-center text-tan hover:text-destructive"><Trash2 className="size-5" aria-hidden /></button>
                   </div>

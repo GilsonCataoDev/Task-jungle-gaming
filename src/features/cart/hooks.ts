@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { api, GUEST_CART_FLAG } from "@/lib/api"
 import { qk } from "@/lib/query-keys"
 import { useSession } from "@/features/auth/hooks"
-import type { Cart, Edition, Nft } from "@/types/domain"
+import { maxQuantity, type Cart, type Edition, type Nft } from "@/types/domain"
 
 const GUEST = "guest"
 
@@ -57,8 +57,8 @@ export function useAddToCart() {
       return touch(
         cart,
         existing
-          ? cart.items.map((item) => (item.nft.id === nft.id ? { ...item, edition, quantity: Math.min(nft.available, item.quantity + quantity) } : item))
-          : [...cart.items, { nft, edition, quantity: Math.min(nft.available, quantity) }],
+          ? cart.items.map((item) => (item.nft.id === nft.id ? { ...item, edition, quantity: Math.min(maxQuantity(nft, edition), item.quantity + quantity) } : item))
+          : [...cart.items, { nft, edition, quantity: Math.min(maxQuantity(nft, edition), quantity) }],
       )
     },
   )
@@ -70,7 +70,7 @@ export function useUpdateCartItem() {
     (cart, { nftId, quantity }) =>
       touch(
         cart,
-        cart.items.flatMap((item) => (item.nft.id !== nftId ? [item] : quantity <= 0 ? [] : [{ ...item, quantity: Math.min(item.nft.available, quantity) }])),
+        cart.items.flatMap((item) => (item.nft.id !== nftId ? [item] : quantity <= 0 ? [] : [{ ...item, quantity: Math.min(maxQuantity(item.nft, item.edition), quantity) }])),
       ),
   )
 }

@@ -1,5 +1,5 @@
 import { addEth, compareEth, mulEth, percentOfEth, subEth, sumEth } from "@/lib/money"
-import type { Cart, CartItem, Nft, Order, OrderUpdatedEvent, Quote, QuoteIssue } from "@/types/domain"
+import { maxQuantity, type Cart, type CartItem, type Nft, type Order, type OrderUpdatedEvent, type Quote, type QuoteIssue } from "@/types/domain"
 import { db, mutate, type StoredOrder } from "./db"
 import { COUPONS, NETWORK_FEE_ETH } from "./fixtures"
 import { publish } from "./realtime"
@@ -35,7 +35,8 @@ export function computeQuote(userId: string, couponInput: string | null): Quote 
   const issues: QuoteIssue[] = []
 
   for (const item of items) {
-    if (item.quantity > item.nft.available) issues.push({ code: "unavailable", nftId: item.nft.id, available: item.nft.available })
+    const limit = maxQuantity(item.nft, item.edition)
+    if (item.quantity > limit) issues.push({ code: "unavailable", nftId: item.nft.id, available: limit })
   }
 
   const subtotalEth = sumEth(items.map((item) => mulEth(item.nft.priceEth, item.quantity)))

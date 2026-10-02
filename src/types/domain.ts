@@ -14,6 +14,15 @@ export type WalletType = (typeof WALLET_TYPES)[number]
 export const EDITIONS = ["1/1", "1/10", "1/50", "ABERTA"] as const
 export type Edition = (typeof EDITIONS)[number]
 
+/** Teto de unidades por compra em cada edição: a "1/1" é única, a "1/10" tem tiragem de 10 e assim por diante. */
+export const EDITION_CAP: Record<Edition, number> = { "1/1": 1, "1/10": 10, "1/50": 50, ABERTA: Number.POSITIVE_INFINITY }
+
+/** Quantas unidades de `edition` dá para comprar: estoque do NFT, teto da edição e edição indisponível (0). */
+export function maxQuantity(nft: { available: number; unavailableEditions: readonly Edition[] }, edition: Edition) {
+  if (nft.unavailableEditions.includes(edition)) return 0
+  return Math.max(0, Math.min(nft.available, EDITION_CAP[edition]))
+}
+
 /** Arte do NFT (arquivos em src/assets/nfts). */
 export type NftImage = "emerald-ape" | "violet-nomad" | "ivory-baron" | "golden-beat"
 
@@ -34,6 +43,8 @@ export type Nft = {
   available: number
   /** Edição padrão do NFT. */
   edition: Edition
+  /** Edições que não podem ser compradas (ex.: a "1/1" já foi vendida). Nunca inclui a edição padrão. */
+  unavailableEditions: Edition[]
   attributes: string[]
   description: string
   rarity: "Raro" | null

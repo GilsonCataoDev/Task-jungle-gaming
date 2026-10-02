@@ -1,5 +1,5 @@
 import { http, HttpResponse } from "msw"
-import { EDITIONS, type Cart, type Edition, type Quote } from "@/types/domain"
+import { EDITIONS, maxQuantity, type Cart, type Edition, type Quote } from "@/types/domain"
 import { db, mutate } from "../db"
 import { beginAuth, beginCart, fail, visitorOwner } from "../http"
 import { buildCart, computeQuote } from "../logic"
@@ -55,12 +55,14 @@ export const shoppingHandlers = [
     if (nft.available <= 0) return fail(409, "unavailable", "Este NFT está esgotado.")
     const quantity = Math.max(1, Math.floor(body.quantity ?? 1))
     const edition = (EDITIONS as readonly string[]).includes(body.edition ?? "") ? (body.edition as Edition) : nft.edition
+    if (nft.unavailableEditions.includes(edition)) return fail(409, "edition_unavailable", `A edição ${edition} não está disponível para este NFT.`)
+    const limit = maxQuantity(nft, edition)
     touchCart(ctx.ownerId, (lines) => {
       const line = lines.find((item) => item.nftId === nft.id)
       if (line) {
-        line.quantity = Math.min(nft.available, line.quantity + quantity)
+        line.quantity = Math.min(limit, line.quantity + quantity)
         line.edition = edition
-      } else lines.push({ nftId: nft.id, quantity: Math.min(nft.available, quantity), edition })
+      } else lines.push({ nftId: nft.id, quantity: Math.min(limit, quantity), edition })
     })
     return HttpResponse.json<Cart>(buildCart(ctx.ownerId), { status: 201 })
   }),
@@ -74,7 +76,7 @@ export const shoppingHandlers = [
     if (!Number.isFinite(quantity) || quantity < 0) return fail(422, "validation_error", "Quantidade inválida.")
     touchCart(ctx.ownerId, (lines) => {
       const line = lines.find((item) => item.nftId === nft.id)
-      if (line) line.quantity = Math.min(quantity, nft.available)
+      if (line) line.quantity = Math.min(quantity, maxQuantity(nft, line.edition))
     })
     return HttpResponse.json<Cart>(buildCart(ctx.ownerId))
   }),
@@ -98,10 +100,10 @@ export const shoppingHandlers = [
       touchCart(ctx.user.id, (lines) => {
         for (const guest of guestLines) {
           const nft = db().nfts.find((item) => item.id === guest.nftId)
-          if (!nft || nft.available <= 0) continue
+          if (!nft || maxQuantity(nft, guest.edition) <= 0) continue
           const line = lines.find((item) => item.nftId === guest.nftId)
-          if (line) line.quantity = Math.min(nft.available, line.quantity + guest.quantity)
-          else lines.push({ ...guest, quantity: Math.min(nft.available, guest.quantity) })
+          if (line) line.quantity = Math.min(maxQuantity(nft, line.edition), line.quantity + guest.quantity)
+          else lines.push({ ...guest, quantity: Math.min(maxQuantity(nft, guest.edition), guest.quantity) })
         }
       })
       mutate((state) => delete state.carts[visitor])

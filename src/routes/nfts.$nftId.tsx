@@ -18,7 +18,7 @@ import { nftImageUrl } from "@/lib/nft-images"
 import { qk } from "@/lib/query-keys"
 import { cn } from "@/lib/utils"
 import { useRealtime } from "@/realtime/realtime-provider"
-import { EDITIONS, type Edition, type NftDetail } from "@/types/domain"
+import { EDITIONS, maxQuantity, type Edition, type NftDetail } from "@/types/domain"
 
 export const Route = createFileRoute("/nfts/$nftId")({ component: NftDetailPage })
 
@@ -77,6 +77,10 @@ function NftDetailPage() {
   const liveChange = lastEffect?.type === "nft" && lastEffect.id === nft.id ? lastEffect : null
   const shareUrl = typeof window === "undefined" ? "" : window.location.href
 
+  function chooseEdition(next: Edition) {
+    setEdition(next)
+    setQuantity((current) => Math.min(current, Math.max(1, maxQuantity(nft!, next)))) // o teto muda com a edição
+  }
   function buy() {
     add.mutate({ nft: nft!, quantity, edition: selectedEdition }, { onSuccess: () => void navigate({ to: "/carrinho" }) })
   }
@@ -97,9 +101,10 @@ function NftDetailPage() {
       <legend className="font-bold">Edição:</legend>
       <div className="mt-2 flex flex-wrap gap-2">
         {EDITIONS.map((item) => (
-          <label key={item} className={cn("cursor-pointer rounded-full border px-3 py-1 text-xs has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-ring", selectedEdition === item ? "border-primary text-primary" : "border-input text-tan hover:border-primary")}>
-            <input type="radio" name="edicao" value={item} checked={selectedEdition === item} onChange={() => setEdition(item)} className="sr-only" />
+          <label key={item} className={cn("rounded-full border px-3 py-1 text-xs has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-ring", nft.unavailableEditions.includes(item) ? "cursor-not-allowed border-input text-tan/50 line-through" : "cursor-pointer", selectedEdition === item ? "border-primary text-primary" : "border-input text-tan hover:border-primary")}>
+            <input type="radio" name="edicao" value={item} checked={selectedEdition === item} disabled={nft.unavailableEditions.includes(item)} onChange={() => chooseEdition(item)} className="sr-only" />
             {item}
+            {nft.unavailableEditions.includes(item) && <span className="sr-only"> (indisponível)</span>}
           </label>
         ))}
       </div>
@@ -159,7 +164,7 @@ function NftDetailPage() {
 
           {/* Compra (desktop) */}
           <div className="mt-5 hidden flex-wrap items-center justify-between gap-4 md:flex">
-            <Stepper value={quantity} onChange={setQuantity} min={1} max={Math.max(1, nft.available)} label="Quantidade de edições" />
+            <Stepper value={quantity} onChange={setQuantity} min={1} max={Math.max(1, maxQuantity(nft, selectedEdition))} label="Quantidade de edições" />
             <div className="flex items-center gap-3">
               <button type="button" onClick={buy} disabled={soldOut || add.isPending} className="h-10 rounded-sm bg-primary px-6 text-sm font-bold uppercase text-primary-foreground hover:bg-primary/85 disabled:opacity-50">
                 {soldOut ? "Esgotado" : add.isPending ? "Adicionando..." : "Comprar"}
@@ -212,7 +217,7 @@ function NftDetailPage() {
       {/* Barra de compra fixa (mobile) */}
       <div className="fixed inset-x-0 bottom-0 z-40 rounded-t-3xl bg-card px-5 pb-5 pt-4 shadow-[0_-8px_24px_rgba(0,0,0,0.45)] md:hidden">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3"><span className="text-sm text-tan">Qtd.</span><Stepper value={quantity} onChange={setQuantity} min={1} max={Math.max(1, nft.available)} label="Quantidade de edições" size="sm" /></div>
+          <div className="flex items-center gap-3"><span className="text-sm text-tan">Qtd.</span><Stepper value={quantity} onChange={setQuantity} min={1} max={Math.max(1, maxQuantity(nft, selectedEdition))} label="Quantidade de edições" size="sm" /></div>
           <p className="text-xl font-bold text-primary">{formatEth(nft.priceEth)}</p>
         </div>
         <div className="mt-4 flex gap-3">

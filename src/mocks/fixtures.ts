@@ -125,6 +125,8 @@ function buildNft(seed: Seed, index: number): Nft {
     priceEth: seed.price,
     available: seed.available ?? 5,
     edition: "1/50" satisfies Edition,
+    // Determinístico: a "1/1" já foi vendida em 1 de cada 4 NFTs (incluindo o primeiro); a "1/10", em 1 de cada 6.
+    unavailableEditions: [...(index % 4 === 0 ? (["1/1"] as const) : []), ...(index % 6 === 1 ? (["1/10"] as const) : [])],
     attributes: [...ATTRIBUTES[seed.image], ...(seed.rarity ? [seed.rarity] : [])],
     description: `Um colecionável digital finalizado à mão da coleção ${seed.collection}, verificado na ${seed.network}, com arte desbloqueável e acesso para colecionadores.`,
     rarity: seed.rarity ?? null,

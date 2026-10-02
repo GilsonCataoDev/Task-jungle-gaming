@@ -1,0 +1,127 @@
+{
+  "baseUrl": "http://localhost:4173",
+  "runs": 3,
+  "targets": {
+    "performance": 90,
+    "accessibility": 95,
+    "best-practices": 95,
+    "seo": 90
+  },
+  "rows": [
+    {
+      "page": "Home",
+      "profile": "Mobile",
+      "runs": 3,
+      "scores": {
+        "performance": 88,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcp": 3689.7852000000003,
+      "cls": 0,
+      "tbt": 74,
+      "fcp": 1810.6431,
+      "si": 1810.6431,
+      "allPerformanceScores": [
+        89,
+        88,
+        88
+      ],
+      "failedAudits": [
+        "first-contentful-paint (89)",
+        "largest-contentful-paint (58)",
+        "valid-source-maps (0)",
+        "unused-javascript (0)",
+        "lcp-discovery-insight (0)",
+        "network-dependency-tree-insight (0)",
+        "render-blocking-insight (0)"
+      ]
+    },
+    {
+      "page": "Home",
+      "profile": "Desktop",
+      "runs": 3,
+      "scores": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcp": 630.1478,
+      "cls": 0.000003753302037287242,
+      "tbt": 0,
+      "fcp": 410.1478,
+      "si": 410.1478,
+      "allPerformanceScores": [
+        100,
+        100,
+        100
+      ],
+      "failedAudits": [
+        "valid-source-maps (0)",
+        "unused-javascript (0)",
+        "image-delivery-insight (50)",
+        "network-dependency-tree-insight (0)",
+        "render-blocking-insight (50)"
+      ]
+    },
+    {
+      "page": "Detalhe do NFT",
+      "profile": "Mobile",
+      "runs": 3,
+      "scores": {
+        "performance": 91,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcp": 3323.7818,
+      "cls": 0.02430133657351154,
+      "tbt": 27,
+      "fcp": 1808.9561,
+      "si": 1808.9561,
+      "allPerformanceScores": [
+        91,
+        91,
+        91
+      ],
+      "failedAudits": [
+        "first-contentful-paint (89)",
+        "largest-contentful-paint (69)",
+        "valid-source-maps (0)",
+        "unused-javascript (0)",
+        "lcp-discovery-insight (0)",
+        "network-dependency-tree-insight (0)",
+        "render-blocking-insight (0)"
+      ]
+    },
+    {
+      "page": "Detalhe do NFT",
+      "profile": "Desktop",
+      "runs": 3,
+      "scores": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lcp": 658.30845,
+      "cls": 0.04674276834807554,
+      "tbt": 0,
+      "fcp": 410.8723,
+      "si": 410.8723,
+      "allPerformanceScores": [
+        100,
+        100,
+        100
+      ],
+      "failedAudits": [
+        "valid-source-maps (0)",
+        "unused-javascript (0)",
+        "network-dependency-tree-insight (0)",
+        "render-blocking-insight (50)"
+      ]
+    }
+  ]
+}

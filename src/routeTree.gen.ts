@@ -13,11 +13,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as AprendaRouteImport } from './routes/aprenda'
 import { Route as CadastroRouteImport } from './routes/cadastro'
+import { Route as CarrinhoRouteImport } from './routes/carrinho'
 import { Route as CriadoresRouteImport } from './routes/criadores'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as MercadoRouteImport } from './routes/mercado'
 import { Route as AuthAtividadeRouteImport } from './routes/_auth/atividade'
-import { Route as AuthCarrinhoRouteImport } from './routes/_auth/carrinho'
 import { Route as AuthCarteirasRouteImport } from './routes/_auth/carteiras'
 import { Route as AuthListaDeInteresseRouteImport } from './routes/_auth/lista-de-interesse'
 import { Route as AuthPagamentoRouteImport } from './routes/_auth/pagamento'
@@ -44,6 +44,11 @@ const CadastroRoute = CadastroRouteImport.update({
   path: '/cadastro',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CarrinhoRoute = CarrinhoRouteImport.update({
+  id: '/carrinho',
+  path: '/carrinho',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CriadoresRoute = CriadoresRouteImport.update({
   id: '/criadores',
   path: '/criadores',
@@ -62,11 +67,6 @@ const MercadoRoute = MercadoRouteImport.update({
 const AuthAtividadeRoute = AuthAtividadeRouteImport.update({
   id: '/atividade',
   path: '/atividade',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthCarrinhoRoute = AuthCarrinhoRouteImport.update({
-  id: '/carrinho',
-  path: '/carrinho',
   getParentRoute: () => AuthRoute,
 } as any)
 const AuthCarteirasRoute = AuthCarteirasRouteImport.update({
@@ -104,11 +104,11 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/aprenda': typeof AprendaRoute
   '/cadastro': typeof CadastroRoute
+  '/carrinho': typeof CarrinhoRoute
   '/criadores': typeof CriadoresRoute
   '/login': typeof LoginRoute
   '/mercado': typeof MercadoRoute
   '/atividade': typeof AuthAtividadeRoute
-  '/carrinho': typeof AuthCarrinhoRoute
   '/carteiras': typeof AuthCarteirasRoute
   '/lista-de-interesse': typeof AuthListaDeInteresseRoute
   '/pagamento': typeof AuthPagamentoRoute
@@ -120,11 +120,11 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/aprenda': typeof AprendaRoute
   '/cadastro': typeof CadastroRoute
+  '/carrinho': typeof CarrinhoRoute
   '/criadores': typeof CriadoresRoute
   '/login': typeof LoginRoute
   '/mercado': typeof MercadoRoute
   '/atividade': typeof AuthAtividadeRoute
-  '/carrinho': typeof AuthCarrinhoRoute
   '/carteiras': typeof AuthCarteirasRoute
   '/lista-de-interesse': typeof AuthListaDeInteresseRoute
   '/pagamento': typeof AuthPagamentoRoute
@@ -138,11 +138,11 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteWithChildren
   '/aprenda': typeof AprendaRoute
   '/cadastro': typeof CadastroRoute
+  '/carrinho': typeof CarrinhoRoute
   '/criadores': typeof CriadoresRoute
   '/login': typeof LoginRoute
   '/mercado': typeof MercadoRoute
   '/_auth/atividade': typeof AuthAtividadeRoute
-  '/_auth/carrinho': typeof AuthCarrinhoRoute
   '/_auth/carteiras': typeof AuthCarteirasRoute
   '/_auth/lista-de-interesse': typeof AuthListaDeInteresseRoute
   '/_auth/pagamento': typeof AuthPagamentoRoute
@@ -156,11 +156,11 @@ export interface FileRouteTypes {
     | '/'
     | '/aprenda'
     | '/cadastro'
+    | '/carrinho'
     | '/criadores'
     | '/login'
     | '/mercado'
     | '/atividade'
-    | '/carrinho'
     | '/carteiras'
     | '/lista-de-interesse'
     | '/pagamento'
@@ -172,11 +172,11 @@ export interface FileRouteTypes {
     | '/'
     | '/aprenda'
     | '/cadastro'
+    | '/carrinho'
     | '/criadores'
     | '/login'
     | '/mercado'
     | '/atividade'
-    | '/carrinho'
     | '/carteiras'
     | '/lista-de-interesse'
     | '/pagamento'
@@ -189,11 +189,11 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/aprenda'
     | '/cadastro'
+    | '/carrinho'
     | '/criadores'
     | '/login'
     | '/mercado'
     | '/_auth/atividade'
-    | '/_auth/carrinho'
     | '/_auth/carteiras'
     | '/_auth/lista-de-interesse'
     | '/_auth/pagamento'
@@ -207,6 +207,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   AprendaRoute: typeof AprendaRoute
   CadastroRoute: typeof CadastroRoute
+  CarrinhoRoute: typeof CarrinhoRoute
   CriadoresRoute: typeof CriadoresRoute
   LoginRoute: typeof LoginRoute
   MercadoRoute: typeof MercadoRoute
@@ -243,6 +244,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CadastroRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/carrinho': {
+      id: '/carrinho'
+      path: '/carrinho'
+      fullPath: '/carrinho'
+      preLoaderRoute: typeof CarrinhoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/criadores': {
       id: '/criadores'
       path: '/criadores'
@@ -269,13 +277,6 @@ declare module '@tanstack/react-router' {
       path: '/atividade'
       fullPath: '/atividade'
       preLoaderRoute: typeof AuthAtividadeRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/carrinho': {
-      id: '/_auth/carrinho'
-      path: '/carrinho'
-      fullPath: '/carrinho'
-      preLoaderRoute: typeof AuthCarrinhoRouteImport
       parentRoute: typeof AuthRoute
     }
     '/_auth/carteiras': {
@@ -325,7 +326,6 @@ declare module '@tanstack/react-router' {
 
 interface AuthRouteChildren {
   AuthAtividadeRoute: typeof AuthAtividadeRoute
-  AuthCarrinhoRoute: typeof AuthCarrinhoRoute
   AuthCarteirasRoute: typeof AuthCarteirasRoute
   AuthListaDeInteresseRoute: typeof AuthListaDeInteresseRoute
   AuthPagamentoRoute: typeof AuthPagamentoRoute
@@ -335,7 +335,6 @@ interface AuthRouteChildren {
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthAtividadeRoute: AuthAtividadeRoute,
-  AuthCarrinhoRoute: AuthCarrinhoRoute,
   AuthCarteirasRoute: AuthCarteirasRoute,
   AuthListaDeInteresseRoute: AuthListaDeInteresseRoute,
   AuthPagamentoRoute: AuthPagamentoRoute,
@@ -350,6 +349,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   AprendaRoute: AprendaRoute,
   CadastroRoute: CadastroRoute,
+  CarrinhoRoute: CarrinhoRoute,
   CriadoresRoute: CriadoresRoute,
   LoginRoute: LoginRoute,
   MercadoRoute: MercadoRoute,

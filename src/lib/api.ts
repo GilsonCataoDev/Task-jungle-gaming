@@ -4,6 +4,19 @@ import type { ApiErrorBody } from "@/types/domain"
 
 export const TOKEN_KEY = "kurio:token"
 export const SESSION_EXPIRED_EVENT = "kurio:session-expired"
+export const VISITOR_KEY = "kurio:visitor"
+/** Marca que o visitante mexeu no carrinho: só então o login precisa mesclar (sem custo extra para quem não tem nada). */
+export const GUEST_CART_FLAG = "kurio:guest-cart"
+
+/** Identifica o navegador antes do login: é o dono do carrinho de visitante (mesclado ao da conta ao entrar). */
+export function getVisitorId() {
+  let id = localStorage.getItem(VISITOR_KEY)
+  if (!id) {
+    id = crypto.randomUUID()
+    localStorage.setItem(VISITOR_KEY, id)
+  }
+  return id
+}
 
 export const api = axios.create({ baseURL: "/api", timeout: 8_000 })
 
@@ -11,6 +24,7 @@ api.interceptors.request.use(async (config) => {
   await mockGate // com mocks ligados, nenhuma requisição sai antes de o MSW estar ativo
   const token = localStorage.getItem(TOKEN_KEY)
   if (token) config.headers.Authorization = `Bearer ${token}`
+  config.headers["X-Visitor-Id"] = getVisitorId()
   return config
 })
 

@@ -16,7 +16,7 @@ import { formatEth } from "@/lib/format"
 import { mulEth } from "@/lib/money"
 import { cn } from "@/lib/utils"
 
-export const Route = createFileRoute("/_auth/carrinho")({ component: CartPage })
+export const Route = createFileRoute("/carrinho")({ component: CartPage })
 
 function CartPage() {
   const cart = useCart()

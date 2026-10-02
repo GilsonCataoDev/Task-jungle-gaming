@@ -10,7 +10,6 @@ import { Modal } from "@/components/modal"
 import { StarRating } from "@/components/star-rating"
 import { Stepper } from "@/components/stepper"
 import { Skeleton } from "@/components/ui/skeleton"
-import { useRequireLogin, useSession } from "@/features/auth/hooks"
 import { useAddToCart } from "@/features/cart/hooks"
 import { nftDetailQuery } from "@/features/nfts/queries"
 import { api, getApiError } from "@/lib/api"
@@ -50,8 +49,6 @@ function Frame({ nft, view, className, informative, ...rest }: { nft: NftDetail;
 function NftDetailPage() {
   const { nftId } = Route.useParams()
   const navigate = useNavigate()
-  const { user } = useSession()
-  const requireLogin = useRequireLogin()
   const { lastEffect } = useRealtime()
   const { data: nft, error, isPending, refetch } = useQuery(nftDetailQuery(nftId))
   const add = useAddToCart()
@@ -81,11 +78,9 @@ function NftDetailPage() {
   const shareUrl = typeof window === "undefined" ? "" : window.location.href
 
   function buy() {
-    if (!user) return requireLogin()
     add.mutate({ nft: nft!, quantity, edition: selectedEdition }, { onSuccess: () => void navigate({ to: "/carrinho" }) })
   }
   function addOnly() {
-    if (!user) return requireLogin()
     add.mutate({ nft: nft!, quantity, edition: selectedEdition }, { onSuccess: () => setAdded(true) })
   }
 

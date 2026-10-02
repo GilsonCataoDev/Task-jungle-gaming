@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { api } from "@/lib/api"
+import { api, GUEST_CART_FLAG } from "@/lib/api"
 import { qk } from "@/lib/query-keys"
 import { useSession } from "@/features/auth/hooks"
 import type { Cart, Edition, Nft } from "@/types/domain"
@@ -7,11 +7,12 @@ import type { Cart, Edition, Nft } from "@/types/domain"
 const GUEST = "guest"
 
 export function useCart() {
-  const { user } = useSession()
+  const { user, isPending } = useSession()
   return useQuery({
     queryKey: qk.cart(user?.id ?? GUEST),
     queryFn: async ({ signal }) => (await api.get<Cart>("/cart", { signal })).data,
-    enabled: !!user,
+    // Visitante também tem carrinho; só espera saber quem é o usuário para não gravar na chave errada.
+    enabled: !isPending,
   })
 }
 
@@ -35,6 +36,9 @@ function useOptimisticCart<V>(request: (variables: V) => Promise<Cart>, apply: (
     },
     onError: (_error, _variables, context) => {
       if (context?.previous) queryClient.setQueryData(key, context.previous)
+    },
+    onSuccess: () => {
+      if (userId === GUEST) localStorage.setItem(GUEST_CART_FLAG, "1")
     },
     onSettled: () => {
       void queryClient.invalidateQueries({ queryKey: key })

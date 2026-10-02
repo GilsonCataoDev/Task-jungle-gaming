@@ -13,7 +13,7 @@ export function useQuote(coupon: string | null) {
   return useQuery({
     queryKey: qk.quote(user?.id ?? "guest", coupon, cart.data?.updatedAt ?? ""),
     queryFn: async ({ signal }) => (await api.post<Quote>("/quote", { coupon }, { signal })).data,
-    enabled: !!user && !!cart.data,
+    enabled: !!cart.data,
     placeholderData: keepPreviousData,
   })
 }

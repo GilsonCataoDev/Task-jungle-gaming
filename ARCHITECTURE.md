@@ -149,6 +149,11 @@ MSW na hora (a rota precisa de `GET /auth/session` antes de pintar). Rotas ficam
 - Eventos: `nft.updated` e `order.updated`, ambos com `version` monotônica.
 - `realtime/reconcile.ts` só aplica evento com versão maior que a conhecida: duplicados e atrasados são ignorados e não repetem efeitos.
 - Após reconexão, `resync` invalida tudo e o REST vira a fonte da verdade.
+- **Uma conexão por sessão:** o `RealtimeProvider` recria o socket quando o usuário muda (login, logout, troca de
+  usuário). A conexão antiga é encerrada com todos os seus listeners, as versões já vistas são descartadas e a nova
+  manda o token no `auth` do Socket.IO. No servidor simulado a conexão passa a pertencer àquele usuário:
+  `nft.updated` é público, mas `order.updated` só é entregue ao dono do pedido. Assim, eventos de uma sessão anterior
+  (ou de outra conta) nunca chegam à sessão atual. `window.__mocks.deliveries()` lista o que foi entregue e a quem.
 - Pedido pendente: `GET /orders/:id` avança o status pelo relógio e a tela faz polling como rede de segurança.
 - **Transporte simulado:** o MSW intercepta o WebSocket (`mocks/realtime.ts`) e o `@mswjs/socket.io-binding` faz o handshake e a codificação dos eventos (Engine.IO v4 / Socket.IO v5 só por `websocket`). O binding não envia pings do Engine.IO: o ping de 25 s é enviado em `realtime.ts` para o cliente não derrubar a conexão. Limitações: sem polling/upgrade, sem rooms, sem acks, um namespace, sem broadcast nativo (o `publish` percorre as conexões abertas). `socket.io-client` é carregado por import dinâmico porque captura `globalThis.WebSocket` na avaliação do módulo.
 - O estado da conexão aparece num `role="status"` (só para leitores de tela quando "Ao vivo"; visível quando conectando ou reconectando).
@@ -170,7 +175,7 @@ Controle: `?scenario=<nome>` na URL ou `window.__mocks` no console.
 | `payment-rejected` | pedido → 402 "Transação recusada pela carteira" |
 | `inventory-conflict` | 1x: estoque do 1º item zera antes do pedido |
 
-`window.__mocks`: `reset()`, `setScenario()`, `updateNft()`, `emit()`, `disconnectSockets()`.
+`window.__mocks`: `reset()`, `setScenario()`, `updateNft()`, `emit()`, `disconnectSockets()`, `connectedSockets()`, `deliveries()`.
 Esses controles agem no *servidor* simulado; a UI só descobre as mudanças por REST ou Socket.IO.
 
 ## Credenciais fictícias
@@ -208,7 +213,8 @@ Contra o servidor de dev: `PW_BASE_URL=http://localhost:5173 npx playwright test
 | `purchase.spec.ts` | compra completa até o recibo (modal) |
 | `checkout.spec.ts` | carteira e provedor, transação recusada, clique duplicado, timeout com idempotência, preço/estoque, cupom, validação |
 | `account.spec.ts` | perfil, avatar, senha, carteiras (principal/secundária), menu lateral |
-| `realtime.spec.ts` | preço e estoque via Socket.IO durante o checkout |
+| `realtime.spec.ts` | preço e estoque via Socket.IO durante o checkout; eventos de pedido só chegam ao dono e a conexão muda com a sessão |
+| `network.spec.ts` | falha de conexão com recuperação, respostas fora de ordem (latência variável) e cupom expirado |
 | `resilience.spec.ts` | eventos duplicados/antigos, desconexão, pedido pendente, isolamento de pedidos |
 | `a11y.spec.ts` | teclado, foco visível, modal (foco preso, Esc, retorno), validação de formulário, barra inferior e gaveta de filtros no mobile |
 | `slow.spec.ts` | feedback de carregamento lento e recuperação |

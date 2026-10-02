@@ -145,7 +145,7 @@ MSW na hora (a rota precisa de `GET /auth/session` antes de pintar). Rotas ficam
 - `realtime/reconcile.ts` só aplica evento com versão maior que a conhecida: duplicados e atrasados são ignorados e não repetem efeitos.
 - Após reconexão, `resync` invalida tudo e o REST vira a fonte da verdade.
 - Pedido pendente: `GET /orders/:id` avança o status pelo relógio e a tela faz polling como rede de segurança.
-- **Transporte simulado:** o MSW intercepta o WebSocket (`mocks/realtime.ts`), falando Engine.IO v4 / Socket.IO v5 só por `websocket`. Limitações: sem polling/upgrade, sem rooms, sem acks, um namespace. `socket.io-client` é carregado por import dinâmico porque captura `globalThis.WebSocket` na avaliação do módulo.
+- **Transporte simulado:** o MSW intercepta o WebSocket (`mocks/realtime.ts`) e o `@mswjs/socket.io-binding` faz o handshake e a codificação dos eventos (Engine.IO v4 / Socket.IO v5 só por `websocket`). O binding não envia pings do Engine.IO: o ping de 25 s é enviado em `realtime.ts` para o cliente não derrubar a conexão. Limitações: sem polling/upgrade, sem rooms, sem acks, um namespace, sem broadcast nativo (o `publish` percorre as conexões abertas). `socket.io-client` é carregado por import dinâmico porque captura `globalThis.WebSocket` na avaliação do módulo.
 - O estado da conexão aparece num `role="status"` (só para leitores de tela quando "Ao vivo"; visível quando conectando ou reconectando).
 
 ## Mocks e cenários
@@ -204,6 +204,7 @@ Contra o servidor de dev: `PW_BASE_URL=http://localhost:5173 npx playwright test
 | `resilience.spec.ts` | eventos duplicados/antigos, desconexão, pedido pendente, isolamento de pedidos |
 | `a11y.spec.ts` | teclado, foco visível, modal (foco preso, Esc, retorno), validação de formulário, barra inferior e gaveta de filtros no mobile |
 | `slow.spec.ts` | feedback de carregamento lento e recuperação |
+| `mobile-flows.spec.ts` | fluxos principais no layout mobile (login/logout, cadastro, catálogo→carrinho, checkout recolhido→recibo) |
 | `responsive.spec.ts` | sem overflow nos 3 viewports (inclui telas privadas) + regressão visual |
 
 Baselines visuais ficam em `e2e/__screenshots__/<sistema>/<projeto>/`. Como a fonte renderiza diferente em cada sistema operacional, há uma pasta por sistema; se faltar a do sistema atual, o teste a cria e passa. Refazer de propósito: `npm run test:e2e:update`.

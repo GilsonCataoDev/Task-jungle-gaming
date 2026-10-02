@@ -15,7 +15,7 @@ export const NFT = {
 export const FEE = "0.016"
 
 /** Painel do servidor simulado (window.__mocks). Atua no "servidor", nunca na UI. */
-export type MockScenario = "normal" | "slow" | "timeout" | "server-error" | "mutation-error" | "session-expired" | "price-change" | "payment-rejected" | "inventory-conflict"
+export type MockScenario = "normal" | "slow" | "variable-latency" | "offline" | "timeout" | "server-error" | "mutation-error" | "session-expired" | "price-change" | "payment-rejected" | "inventory-conflict"
 
 export async function setScenario(page: Page, scenario: MockScenario) {
   await page.evaluate((name) => window.__mocks.setScenario(name), scenario)

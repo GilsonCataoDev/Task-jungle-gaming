@@ -33,7 +33,7 @@ export default defineConfig({
     // Mobile: fluxos principais (compra, checkout, falhas, tempo real, resiliência, lentidão) + a spec dedicada.
     // As specs de catálogo/auth/conta/detalhe/a11y exercitam a interface desktop (filtros laterais, teclado) e rodam só lá;
     // o equivalente mobile está em mobile-flows.spec.ts.
-    { name: "mobile", testIgnore: /(a11y|account|auth|catalog|details)\.spec\.ts/, use: { ...devices["Pixel 7"], viewport: { width: 390, height: 844 } } },
+    { name: "mobile", testIgnore: /(a11y|account|auth|catalog|details|network)\.spec\.ts/, use: { ...devices["Pixel 7"], viewport: { width: 390, height: 844 } } },
   ],
   webServer: externalBaseUrl
     ? undefined

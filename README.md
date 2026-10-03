@@ -18,11 +18,12 @@ carrinho, perfil, carteiras e pedidos.
 | Mercado | `/mercado` | O catálogo sozinho (a busca do cabeçalho leva para cá) |
 | Detalhe do NFT | `/nfts/:id` | Galeria, edições, quantidade, comprar, favoritar, abas, edição (só o criador) |
 | Login / Criar conta | `/login`, `/cadastro` | **Modal** sobre a home (tela cheia no mobile) |
-| Carrinho | `/carrinho` | Privada. Cupom, cotação do servidor |
-| Pagamento | `/pagamento` | Privada. Perfil do colecionador, carteira e rede |
+| Carrinho | `/carrinho` | **Pública**: o visitante monta o carrinho e ele passa para a conta ao entrar. Cupom, cotação do servidor |
+| Pagamento | `/pagamento` | Privada (exige login). Perfil do colecionador, carteira e rede |
 | Recibo | `/confirmacao/:pedido` | Privada. **Modal** com o andamento do pedido ao vivo |
 | Perfil, Carteiras, Atividade, Lista de interesse | `/perfil`, `/carteiras`, `/atividade`, `/lista-de-interesse` | Privadas, com o menu "Meu perfil" |
-| Criadores, Aprenda | `/criadores`, `/aprenda` | "Em breve" (só existem no menu do Figma) |
+| Criadores | `/criadores` | Apresenta quem fez o projeto (nome e GitHub); no Figma só existe o item de menu |
+| Aprenda | `/aprenda` | "Em breve" (só existe no menu do Figma) |
 
 ## Começando
 
@@ -184,6 +185,17 @@ O relatório em `lighthouse-report/` é o do deploy e traz versões (Lighthouse 
 
 Para auditar o deploy publicado: `LH_BASE_URL=https://sua-url npm run lighthouse`.
 
+## CI
+
+`.github/workflows/ci.yml` roda a cada push na `main` e em pull requests (e pode ser disparado à mão):
+
+1. **Tipos, lint e build** (`npm run check` e `npm run build`) em Linux.
+2. **E2E (Playwright)**, depois do job anterior, em **Linux, macOS e Windows**: roda desktop, tablet e mobile, com a regressão
+   visual contra as baselines do próprio sistema. Em caso de falha, o relatório HTML e os traces ficam como artefato.
+
+`.github/workflows/visual-baselines.yml` (disparo manual) gera de novo as baselines de Linux e macOS em runners reais, roda a
+verificação uma segunda vez para provar que são estáveis e as grava no repositório.
+
 ## Estrutura
 
 ```
@@ -197,8 +209,9 @@ src/
   mocks/      backend simulado: banco, cenários, handlers REST, servidor Socket.IO
   types/      contratos de domínio compartilhados
   assets/     artes dos NFTs
-e2e/          testes Playwright e baselines visuais
+e2e/          testes Playwright e baselines visuais (win32, linux, darwin)
 scripts/      auditoria Lighthouse
+.github/      workflows de CI e de geração das baselines visuais
 ```
 
 ## Uso de IA
@@ -230,5 +243,6 @@ copiado de `public/` para o `dist/`.
 
 ## Fidelidade ao Figma
 
-O visual segue os prints das telas do Figma (desktop 1440 e mobile 390). Desvios e limites estão listados em
+O visual foi feito a partir dos prints das telas do Figma (desktop 1440 e mobile 390) e depois conferido, tela por tela, contra o
+export do Figma (PNG com todos os frames). Desvios e limites estão listados em
 [ARCHITECTURE.md](ARCHITECTURE.md#desvios-do-figma).

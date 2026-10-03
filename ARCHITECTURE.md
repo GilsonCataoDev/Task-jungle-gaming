@@ -271,7 +271,8 @@ Pontos conhecidos:
   em resolução baixa (234 a 434 px). O ideal é trocar pelos arquivos originais exportados do Figma.
 - **Tablet (768):** não existe no Figma; é uma adaptação (cabeçalho compacto, miniaturas abaixo da imagem, filtros
   em gaveta).
-- **Itens sem tela no Figma:** *Criadores* e *Aprenda* (menu), *Ofertas*, *Arquivos baixados* e *Suporte* (menu do
+- **Criadores:** no Figma só existe o item de menu; a página apresenta quem fez o projeto (nome e link do GitHub).
+- **Itens sem tela no Figma:** *Aprenda* (menu), *Ofertas*, *Arquivos baixados* e *Suporte* (menu do
   perfil) e "Ler mais" do Diário da Cunhagem aparecem como no design, mas desabilitados ou "em breve". Login com
   Google/Facebook e "Esqueceu a senha?" mostram um aviso de que não existem na demonstração.
 - **Conteúdo inventado:** textos dos slides 2 e 3 do herói, avaliações dos colecionadores, descrições e nomes dos NFTs

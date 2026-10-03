@@ -125,7 +125,7 @@ reconectar, o REST volta a ser a fonte da verdade. O transporte simulado e suas 
 
 ## Testes
 
-`npm run test:e2e` roda **156 testes** em 3 projetos: desktop (1440, todos os cenários), tablet (768, só a spec responsiva) e mobile
+`npm run test:e2e` roda **159 testes** em 3 projetos: desktop (1440, todos os cenários), tablet (768, só a spec responsiva) e mobile
 (390, os fluxos principais: compra, checkout e falhas de pagamento, tempo real, resiliência, lentidão e a spec
 `mobile-flows.spec.ts`; as specs de catálogo, auth, conta, detalhe e a11y usam a interface desktop e rodam só lá).
 Falhas guardam trace (`retain-on-failure`) e o relatório HTML sai em `playwright-report/`. Cada teste abre um contexto limpo, então o banco simulado nasce das

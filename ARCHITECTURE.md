@@ -224,6 +224,13 @@ Contra o servidor de dev: `PW_BASE_URL=http://localhost:5173 npx playwright test
 Baselines visuais ficam em `e2e/__screenshots__/<sistema>/<projeto>/`. Como a fonte renderiza diferente em cada sistema operacional, há uma pasta por sistema; se faltar a do sistema atual, o teste a cria e passa. Refazer de propósito: `npm run test:e2e:update`.
 
 ## Decisões de UX
+- **A busca filtra ao digitar.** Cada tecla agenda a busca (`useDebouncedCallback`, 300 ms): teclas seguidas viram uma
+  consulta só, feita na pausa. Enter ou "Buscar" busca na hora e cancela a pendente. O termo vai para a URL trocando a
+  entrada do histórico (`replace`), então digitar não empilha uma entrada por pausa e o botão Voltar continua útil. No
+  cabeçalho (desktop) isso vale só em Início e Mercado, que já mostram o catálogo; em outras telas a busca continua
+  sendo confirmada com Enter, para a página não mudar sozinha. A busca mobile ("Explorar coleções") funciona igual; o
+  campo não é recriado a cada busca (mantém foco e texto), e só acompanha a URL quando não está em foco. Respostas
+  velhas não sobrescrevem as novas porque a consulta anterior é cancelada (`signal`).
 - Filtros do catálogo na URL: voltar, recarregar e compartilhar o link restauram a listagem.
 - A lista anterior permanece na tela enquanto a nova carrega (sem piscar para esqueleto na paginação).
 - Mutações otimistas avisam e desfazem a alteração quando falham (nunca falham em silêncio).
@@ -254,7 +261,9 @@ pôde ser inspecionado (sem medidas exatas), então espaçamentos, raios e taman
 recortado e comparado lado a lado com capturas do app (home, detalhe, carrinho, pagamento, login, cadastro e as telas
 mobile). Dessa comparação saíram três correções: rodapé como bloco recuado (não de borda a borda), a faixa "Mais desta
 coleção" no detalhe e, no mobile, a busca "Explorar coleções" antes do banner com as abas numa linha só. Perfil e
-Carteiras (desktop) e a confirmação em modal não foram recortados e comparados com o mesmo cuidado.
+Carteiras (desktop) foram comparados depois: mesma estrutura (menu lateral, duas colunas, seções), com ajustes finos de
+espaçamento e sem o título "Carteiras" visível (fica só para leitores de tela). A confirmação em modal não foi comparada
+com o mesmo cuidado.
 
 Pontos conhecidos:
 

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { Link } from "@tanstack/react-router"
 import { Search, SlidersHorizontal } from "lucide-react"
-import { useState, type FormEvent } from "react"
+import { useEffect, useRef, useState, type FormEvent } from "react"
 import { Modal } from "@/components/modal"
 import { NftCard } from "@/components/nft-card"
 import { NftImage } from "@/components/nft-image"
@@ -12,6 +12,7 @@ import { nftFacetsQuery, nftListQuery } from "@/features/nfts/queries"
 import { PAGE_SIZE, SORT_LABELS, TAB_LABELS, toListParams, type NftSearch } from "@/features/nfts/search"
 import { getApiError } from "@/lib/api"
 import { formatEth } from "@/lib/format"
+import { SEARCH_DEBOUNCE_MS, useDebouncedCallback } from "@/lib/use-debounced-callback"
 import { useMediaQuery } from "@/lib/use-media-query"
 import { cn } from "@/lib/utils"
 import { CATEGORIES, NETWORKS, type NftSort, type NftTab } from "@/types/domain"
@@ -79,8 +80,19 @@ function FiltersButton({ onClick, className }: { onClick: () => void; className?
 
 /** Mobile: busca + botão de filtros, como no Figma. Na home vem antes do banner; no mercado, no topo do catálogo. */
 export function MobileSearchBar({ search, onChange, onOpenFilters, className }: { search: NftSearch; onChange: Props["onChange"]; onOpenFilters: () => void; className?: string }) {
+  const input = useRef<HTMLInputElement>(null)
+  const liveSearch = useDebouncedCallback((raw: string) => onChange({ search: raw.trim() || undefined }), SEARCH_DEBOUNCE_MS)
+
+  // O campo é não controlado (o usuário manda no texto enquanto digita). Se a URL muda por outro motivo ("limpar
+  // filtros", histórico), o campo acompanha, mas nunca enquanto está em foco: não atropela o que está sendo digitado.
+  useEffect(() => {
+    const field = input.current
+    if (field && document.activeElement !== field && field.value.trim() !== (search.search ?? "")) field.value = search.search ?? ""
+  }, [search.search])
+
   function submitSearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    liveSearch.cancel()
     onChange({ search: String(new FormData(event.currentTarget).get("search") ?? "").trim() || undefined })
   }
   return (
@@ -88,7 +100,7 @@ export function MobileSearchBar({ search, onChange, onOpenFilters, className }: 
       <label htmlFor="busca-mobile" className="sr-only">Explorar coleções</label>
       <div className="flex h-11 flex-1 items-center gap-2 rounded-md bg-card px-3">
         <Search className="size-5 text-tan" aria-hidden />
-        <input key={search.search ?? ""} id="busca-mobile" name="search" type="search" defaultValue={search.search ?? ""} placeholder="Explorar coleções" className="min-w-0 flex-1 bg-transparent text-sm font-bold text-tan outline-none placeholder:text-tan" />
+        <input ref={input} id="busca-mobile" name="search" type="search" defaultValue={search.search ?? ""} onChange={(event) => liveSearch(event.currentTarget.value)} placeholder="Explorar coleções" className="min-w-0 flex-1 bg-transparent text-sm font-bold text-tan outline-none placeholder:text-tan" />
       </div>
       <FiltersButton onClick={onOpenFilters} />
     </form>

@@ -3,6 +3,7 @@ import { LogIn, LogOut, Search, ShoppingCart, UserRound, X } from "lucide-react"
 import { useEffect, useRef, useState, type FormEvent } from "react"
 import { useLogout, useSession } from "@/features/auth/hooks"
 import { useCart } from "@/features/cart/hooks"
+import { SEARCH_DEBOUNCE_MS, useDebouncedCallback } from "@/lib/use-debounced-callback"
 import { cn } from "@/lib/utils"
 
 export function Logo({ className }: { className?: string }) {
@@ -35,8 +36,17 @@ export function SiteHeader() {
     return () => document.removeEventListener("keydown", onKey)
   }, [searching])
 
+  // Filtrar ao digitar: só nas telas que já mostram o catálogo (mercado e início), para a página não mudar sob os pés
+  // de quem está lendo outra coisa (detalhe, carrinho...). Troca a entrada do histórico em vez de empilhar uma por pausa.
+  const liveSearch = useDebouncedCallback((raw: string) => {
+    const term = raw.trim() || undefined
+    if (pathname === "/mercado") void navigate({ to: "/mercado", search: (current) => ({ ...current, search: term, page: undefined }), replace: true })
+    else if (pathname === "/") void navigate({ to: "/", search: (current) => ({ ...current, search: term, page: undefined }), replace: true })
+  }, SEARCH_DEBOUNCE_MS)
+
   function submitSearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    liveSearch.cancel() // Enter / "Buscar" busca na hora, sem esperar a pausa
     const term = String(new FormData(event.currentTarget).get("q") ?? "").trim()
     setSearching(false)
     void navigate({ to: "/mercado", search: { search: term || undefined } })
@@ -109,7 +119,7 @@ export function SiteHeader() {
         <div className="border-t border-line bg-card py-3">
           <form role="search" onSubmit={submitSearch} className="page-shell flex gap-3">
             <label htmlFor="busca-cabecalho" className="sr-only">Buscar NFTs</label>
-            <input ref={searchInput} id="busca-cabecalho" name="q" type="search" placeholder="Buscar por nome, coleção ou criador" className="field-control" />
+            <input ref={searchInput} id="busca-cabecalho" name="q" type="search" placeholder="Buscar por nome, coleção ou criador" onChange={(event) => liveSearch(event.currentTarget.value)} className="field-control" />
             <button type="submit" className="rounded-sm bg-primary px-5 font-bold text-primary-foreground hover:bg-primary/85">Buscar</button>
           </form>
         </div>

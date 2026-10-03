@@ -51,7 +51,7 @@ function WalletsPage() {
   }
 
   return (
-    <ProfileLayout active="/carteiras" title="Carteiras">
+    <ProfileLayout active="/carteiras" title="Carteiras" titleHidden>
       {wallets.isPending && <Skeleton className="mt-6 h-96 bg-card" aria-label="Carregando carteiras" />}
       {wallets.isError && !wallets.data && (
         <div role="alert" className="mt-6 bg-card p-6"><p>{getApiError(wallets.error).message}</p><button type="button" onClick={() => void wallets.refetch()} className="mt-2 font-bold text-primary underline">Tentar novamente</button></div>

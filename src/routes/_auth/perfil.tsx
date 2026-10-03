@@ -71,7 +71,7 @@ function ProfilePage() {
   return (
     <ProfileLayout active="/perfil" title="Perfil do colecionador">
       <form onSubmit={submit} noValidate key={`${user.name}|${user.username}|${user.email}|${user.ens}|${user.walletNickname}`} className="mt-6">
-        <div className="grid gap-x-8 gap-y-5 md:grid-cols-2">
+        <div className="grid gap-x-8 gap-y-6 md:grid-cols-2">
           <div className="space-y-5">
             <TextField id="name" label="Nome de exibição" required defaultValue={user.name} error={errors.name} autoComplete="name" />
             <TextField id="email" label="E-mail" required type="email" defaultValue={user.email} error={errors.email} autoComplete="email" />
@@ -93,7 +93,7 @@ function ProfilePage() {
           </div>
         </div>
 
-        <h2 className="mt-10 text-lg font-bold">Alterar senha</h2>
+        <h2 className="mt-10 text-base font-bold">Alterar senha</h2>
         <div className="mt-4 max-w-md space-y-5">
           <PasswordField id="currentPassword" label="Senha atual" autoComplete="current-password" error={errors.currentPassword} />
           <PasswordField id="newPassword" label="Nova senha" autoComplete="new-password" hint="Mínimo de 8 caracteres." error={errors.newPassword} />

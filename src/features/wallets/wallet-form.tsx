@@ -62,7 +62,7 @@ export function WalletForm({ idPrefix, initial, submitLabel, pending, serverErro
 
   return (
     <form onSubmit={submit} noValidate className="mt-4">
-      <div className="grid gap-x-8 gap-y-4 md:grid-cols-2">
+      <div className="grid gap-x-8 gap-y-5 md:grid-cols-2">
         <TextField {...bind("displayName")} id={id("displayName")} label="Nome de exibição" required />
         <TextField {...bind("nickname")} id={id("nickname")} label="Apelido da carteira" required />
         <SelectField {...bind("network")} id={id("network")} label="Rede" required options={NETWORKS} placeholder="Selecione uma rede" />

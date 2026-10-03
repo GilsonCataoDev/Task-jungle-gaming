@@ -18,7 +18,7 @@ const ITEMS: Item[] = [
 ]
 
 /** Moldura das telas de conta: menu "Meu perfil" à esquerda (desktop) ou em abas roláveis (mobile). */
-export function ProfileLayout({ active, title, children }: { active: NonNullable<Item["to"]>; title: string; children: ReactNode }) {
+export function ProfileLayout({ active, title, titleHidden, children }: { active: NonNullable<Item["to"]>; title: string; /** Só para leitores de tela (no Figma, Carteiras abre direto em "Carteira principal"). */ titleHidden?: boolean; children: ReactNode }) {
   const logout = useLogout()
   const navigate = useNavigate()
 
@@ -60,7 +60,7 @@ export function ProfileLayout({ active, title, children }: { active: NonNullable
       </nav>
 
       <section aria-labelledby="titulo-conta" className="min-w-0">
-        <h1 id="titulo-conta" className="text-lg font-bold">{title}</h1>
+        <h1 id="titulo-conta" className={cn("text-lg font-bold", titleHidden && "sr-only")}>{title}</h1>
         {children}
       </section>
     </div>

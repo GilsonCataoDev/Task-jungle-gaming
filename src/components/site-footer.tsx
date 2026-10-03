@@ -61,8 +61,8 @@ const COLLECTIONS_LINKS = ["Arte digital", "Fotografia", "Música", "Arte 3D", "
 
 export function SiteFooter() {
   return (
-    <footer className="mt-24 bg-card text-sm max-md:mb-24">
-      <div className="mx-auto w-full max-w-[1200px]">
+    <footer className="mt-24 text-sm max-md:mb-24">
+      <div className="page-shell bg-card">
         <div className="grid gap-8 px-6 py-10 sm:grid-cols-2 md:px-12 lg:grid-cols-[repeat(3,1fr)_1.15fr]">
           {FEATURES.map(({ letter, title, text }) => (
             <div key={title} className="lg:border-r lg:border-primary/45 lg:pr-6">
@@ -124,7 +124,7 @@ export function SiteFooter() {
           </div>
         </div>
       </div>
-      <p className="bg-background py-4 text-center text-xs text-foreground/80">© 2026 Kurio. Propriedade digital para todos.</p>
+      <p className="py-4 text-center text-xs text-foreground/80">© 2026 Kurio. Propriedade digital para todos.</p>
     </footer>
   )
 }

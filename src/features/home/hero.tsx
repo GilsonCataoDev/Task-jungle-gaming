@@ -79,7 +79,7 @@ export function Hero() {
       <div className="hidden items-center gap-10 md:grid md:grid-cols-[1fr_minmax(0,20rem)] lg:grid-cols-[1fr_28rem]">
         <div className="relative py-8 lg:min-h-[26rem] lg:pl-10">
           <p className="text-sm">Bem-vindo à Kurio</p>
-          <h1 className="hero-title mt-3 max-w-[34rem]">{slide.title}</h1>
+          <h1 className="hero-title mt-3 max-w-[34rem]" style={{ textWrap: "balance" }}>{slide.title}</h1>
           <p className="mt-2 max-w-[35rem] text-sm leading-6 text-tan">{slide.text}</p>
           <a href="#mercado" className="mt-8 inline-flex h-10 items-center rounded-sm bg-primary px-6 text-sm font-bold uppercase text-primary-foreground hover:bg-primary/85">Explorar</a>
           <div className="absolute bottom-4 left-1/2 hidden -translate-x-1/2 lg:block">{dots}</div>

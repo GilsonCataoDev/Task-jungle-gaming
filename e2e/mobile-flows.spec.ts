@@ -25,6 +25,19 @@ test.describe("fluxos principais no mobile", () => {
     expect(await page.evaluate(() => localStorage.getItem("kurio:token"))).toBeNull()
   })
 
+  test("a busca 'Explorar coleções' filtra ao digitar", async ({ page }) => {
+    await page.goto("/mercado")
+    await waitForApp(page)
+    const box = page.getByRole("searchbox", { name: "Explorar coleções" })
+    await box.pressSequentially("Violet", { delay: 60 })
+    await expect(page).toHaveURL(/search=Violet/)
+    const cards = page.getByRole("region", { name: "Mercado de NFTs" }).locator("article")
+    await expect(cards.first()).toContainText("Violet")
+    for (const text of await cards.allInnerTexts()) expect(text).toContain("Violet")
+    await expect(box).toHaveValue("Violet")
+    await expect(box).toBeFocused() // o campo não é recriado a cada busca
+  })
+
   test("cadastro valida os campos e rejeita e-mail já cadastrado", async ({ page }) => {
     await page.goto("/cadastro")
     const dialog = page.getByRole("dialog", { name: "Criar conta" })

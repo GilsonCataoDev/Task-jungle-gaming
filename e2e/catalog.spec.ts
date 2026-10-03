@@ -2,6 +2,26 @@ import { expect, test } from "@playwright/test"
 import { prices, waitForApp } from "./helpers"
 
 test.describe("catálogo", () => {
+  test("a busca filtra ao digitar: sem Enter, sem empilhar histórico e voltando ao apagar", async ({ page }) => {
+    await page.goto("/mercado")
+    await waitForApp(page)
+    const historyBefore = await page.evaluate(() => history.length)
+    const cards = page.getByRole("region", { name: "Mercado de NFTs" }).locator("article")
+
+    await page.getByRole("button", { name: "Buscar NFTs" }).click()
+    const box = page.getByRole("searchbox", { name: "Buscar NFTs" })
+    await box.pressSequentially("Violet", { delay: 60 }) // teclas seguidas viram uma busca só, depois da pausa
+    await expect(page).toHaveURL(/search=Violet/)
+    await expect(cards.first()).toContainText("Violet")
+    for (const text of await cards.allInnerTexts()) expect(text).toContain("Violet")
+    await expect(box).toHaveValue("Violet") // o campo não perde o que foi digitado
+    expect(await page.evaluate(() => history.length)).toBe(historyBefore) // trocou a entrada em vez de empilhar
+
+    await box.fill("")
+    await expect(page).not.toHaveURL(/search=/)
+    await expect(page.getByText("36 resultados")).toBeAttached()
+  })
+
   test("busca, filtros combinados, ordenação e faixa de preço", async ({ page }) => {
     await page.goto("/mercado")
     await waitForApp(page)

@@ -210,6 +210,7 @@ usado, para a avaliação ser transparente:
   testes Playwright, os scripts de Lighthouse e de CI e os documentos (`README.md`, `ARCHITECTURE.md`).
 - **O que ficou com o autor:** a direção do trabalho (requisitos, prioridades e o que corrigir), as escolhas de
   produto, a conferência com o Figma e a decisão do que publicar.
+- **Revisão:** o autor revisou o código entregue e responde por ele.
 - **Como foi verificado:** tipos, lint e a suíte E2E (`npm run check` e `npm run test:e2e`) rodam no CI em Linux, macOS e
   Windows, e a auditoria Lighthouse foi feita no deploy publicado. Os números deste README vêm dessas execuções.
 - **Rastro no histórico:** os commits feitos com o assistente terminam com `Co-Authored-By: Claude`. Os commits das

@@ -7,11 +7,12 @@ import { FavoriteButton, FavoriteTextButton } from "@/components/favorite-button
 import { TextField } from "@/components/form-field"
 import { LinkedinIcon, TwitterIcon } from "@/components/icons"
 import { Modal } from "@/components/modal"
+import { NftShelf } from "@/components/nft-shelf"
 import { StarRating } from "@/components/star-rating"
 import { Stepper } from "@/components/stepper"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useAddToCart } from "@/features/cart/hooks"
-import { nftDetailQuery } from "@/features/nfts/queries"
+import { nftDetailQuery, nftListQuery } from "@/features/nfts/queries"
 import { api, getApiError } from "@/lib/api"
 import { formatDate, formatEth } from "@/lib/format"
 import { nftImageUrl } from "@/lib/nft-images"
@@ -52,6 +53,7 @@ function NftDetailPage() {
   const { lastEffect } = useRealtime()
   const { data: nft, error, isPending, refetch } = useQuery(nftDetailQuery(nftId))
   const add = useAddToCart()
+  const sameCollection = useQuery({ ...nftListQuery({ tab: "all", sort: "recent", page: 1, pageSize: 36, search: nft?.collection }), enabled: !!nft })
   const [view, setView] = useState(0)
   const [zoom, setZoom] = useState(false)
   const [quantity, setQuantity] = useState(1)
@@ -213,6 +215,12 @@ function NftDetailPage() {
           </ul>
         )}
       </section>
+
+      {nft && (
+        <div className="page-shell">
+          <NftShelf id="mais-da-colecao" title="Mais desta coleção" items={(sameCollection.data?.items ?? []).filter((item) => item.collection === nft.collection && item.id !== nft.id)} />
+        </div>
+      )}
 
       {/* Barra de compra fixa (mobile) */}
       <div className="fixed inset-x-0 bottom-0 z-40 rounded-t-3xl bg-card px-5 pb-5 pt-4 shadow-[0_-8px_24px_rgba(0,0,0,0.45)] md:hidden">

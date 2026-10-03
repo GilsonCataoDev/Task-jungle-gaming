@@ -4,6 +4,7 @@ import { ArrowLeft, Trash2 } from "lucide-react"
 import type { FormEvent } from "react"
 import { Breadcrumb } from "@/components/breadcrumb"
 import { NftImage } from "@/components/nft-image"
+import { NftShelf } from "@/components/nft-shelf"
 import { Stepper } from "@/components/stepper"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useCart, useRemoveCartItem, useUpdateCartItem } from "@/features/cart/hooks"
@@ -124,18 +125,7 @@ function CartPage() {
       )}
 
       {items.length > 0 && (
-        <section aria-labelledby="tambem-viram" className="mt-16 max-md:hidden">
-          <h2 id="tambem-viram" className="border-b border-line pb-3 text-lg font-bold text-primary">Colecionadores também viram</h2>
-          <ul className="mt-6 grid grid-cols-5 gap-6">
-            {suggestions.data?.items.filter((nft) => !items.some((item) => item.nft.id === nft.id)).slice(0, 5).map((nft) => (
-              <li key={nft.id} className="bg-card">
-                <Link to="/nfts/$nftId" params={{ nftId: nft.id }} className="block px-2 pt-2" aria-label={`Ver ${nft.name}`}><NftImage image={nft.image} name={nft.name} className="aspect-[4/5] rounded-xl" /></Link>
-                <p className="px-0 pt-2 text-sm">{nft.name}</p>
-                <p className="font-bold text-primary">{formatEth(nft.priceEth, 2)}</p>
-              </li>
-            ))}
-          </ul>
-        </section>
+        <NftShelf id="tambem-viram" title="Colecionadores também viram" items={(suggestions.data?.items ?? []).filter((nft) => !items.some((item) => item.nft.id === nft.id))} />
       )}
     </div>
   )

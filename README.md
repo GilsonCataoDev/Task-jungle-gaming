@@ -160,10 +160,10 @@ exceto Performance do Início no mobile (88; as três medições ficaram entre 8
 
 | Página | Perfil | Performance | Acessibilidade | Boas práticas | SEO | LCP | CLS | TBT |
 |---|---|---|---|---|---|---|---|---|
-| Início | Mobile | **96** | 100 | 100 | 100 | 2,69 s | 0,000 | 54 ms |
-| Início | Desktop | 100 | 100 | 100 | 100 | 578 ms | 0,000 | 0 ms |
-| Detalhe do NFT | Mobile | 97 | 100 | 100 | 100 | 2,46 s | 0,024 | 10 ms |
-| Detalhe do NFT | Desktop | 100 | 100 | 100 | 100 | 580 ms | 0,047 | 0 ms |
+| Início | Mobile | **95** | 100 | 100 | 100 | 2,70 s | 0,000 | 79 ms |
+| Início | Desktop | 100 | 100 | 100 | 100 | 583 ms | 0,000 | 0 ms |
+| Detalhe do NFT | Mobile | 96 | 100 | 100 | 100 | 2,52 s | 0,024 | 10 ms |
+| Detalhe do NFT | Desktop | 100 | 100 | 100 | 100 | 600 ms | 0,047 | 0 ms |
 
 O relatório em `lighthouse-report/` é o do deploy e traz versões (Lighthouse 13.5.0, Chrome 154, Node 24), ambiente e as condições de throttling de cada perfil (mobile: CPU 4x, 150 ms RTT, 1,6 Mbps). A diferença para o local vem da compressão e do CDN da Vercel.
 

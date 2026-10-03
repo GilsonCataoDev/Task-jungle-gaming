@@ -246,7 +246,7 @@ Baselines visuais ficam em `e2e/__screenshots__/<sistema>/<projeto>/`. Como a fo
 - Socket.IO simulado só fala `websocket` (sem polling), sem rooms nem acks, e um namespace.
 - O status do pedido avança por relógio (1,5 s → processando, 3,5 s → confirmado), não por um processo real.
 - As baselines visuais existem para Windows (`win32`), Linux e macOS (`darwin`), 21 por sistema. As de Linux e macOS foram geradas em runners reais pelo workflow `visual-baselines.yml` (Actions > Baselines visuais > Run workflow), que também as executa uma segunda vez para provar que são estáveis. Um sistema novo cria a sua baseline na primeira execução.
-- Performance do Início no mobile fica em 88 no build local e 96 no deploy da Vercel (ver o README: o LCP depende do MSW subir no navegador).
+- Performance do Início no mobile fica em 88 no build local e 95 no deploy da Vercel (ver o README: o LCP depende do MSW subir no navegador).
 
 ## Segurança
 - Cabeçalhos no `vercel.json`: CSP restritiva (só a própria origem; `style-src-attr 'unsafe-inline'` apenas para os atributos `style` do React), `nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy` e `Permissions-Policy`.

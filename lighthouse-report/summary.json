@@ -21,23 +21,24 @@
       "runs": 3,
       "conditions": "mobile; throttling simulate; CPU 4x; rede 150 ms RTT / 1638 kbps",
       "scores": {
-        "performance": 96,
+        "performance": 95,
         "accessibility": 100,
         "best-practices": 100,
         "seo": 100
       },
-      "lcp": 2690.609,
+      "lcp": 2695.5209999999997,
       "cls": 0,
-      "tbt": 53.5,
-      "fcp": 1708.525,
-      "si": 1709.109,
+      "tbt": 78.5,
+      "fcp": 1710.021,
+      "si": 1710.021,
       "allPerformanceScores": [
+        94,
         95,
-        96,
-        96
+        95
       ],
       "failedAudits": [
-        "largest-contentful-paint (86)",
+        "largest-contentful-paint (85)",
+        "max-potential-fid (89)",
         "valid-source-maps (0)",
         "unused-javascript (0)",
         "lcp-discovery-insight (0)",
@@ -56,11 +57,11 @@
         "best-practices": 100,
         "seo": 100
       },
-      "lcp": 578.394,
+      "lcp": 583.2909999999999,
       "cls": 0.000003753302037287242,
       "tbt": 0,
-      "fcp": 418.394,
-      "si": 469.4704848293741,
+      "fcp": 423.291,
+      "si": 495.2002857499908,
       "allPerformanceScores": [
         100,
         100,
@@ -80,22 +81,23 @@
       "runs": 3,
       "conditions": "mobile; throttling simulate; CPU 4x; rede 150 ms RTT / 1638 kbps",
       "scores": {
-        "performance": 97,
+        "performance": 96,
         "accessibility": 100,
         "best-practices": 100,
         "seo": 100
       },
-      "lcp": 2462.7039999999997,
+      "lcp": 2520.6825,
       "cls": 0.02430133657351154,
       "tbt": 10,
-      "fcp": 1700.704,
-      "si": 1700.704,
+      "fcp": 1739.6825,
+      "si": 2870.7772765780464,
       "allPerformanceScores": [
-        97,
-        97,
+        96,
+        95,
         96
       ],
       "failedAudits": [
+        "largest-contentful-paint (89)",
         "valid-source-maps (0)",
         "unused-javascript (0)",
         "lcp-discovery-insight (0)",
@@ -114,11 +116,11 @@
         "best-practices": 100,
         "seo": 100
       },
-      "lcp": 579.9005,
+      "lcp": 599.7049999999999,
       "cls": 0.04674276834807554,
       "tbt": 0,
-      "fcp": 415.90200000000004,
-      "si": 511.9560039126883,
+      "fcp": 424.705,
+      "si": 517.3411907500199,
       "allPerformanceScores": [
         100,
         100,

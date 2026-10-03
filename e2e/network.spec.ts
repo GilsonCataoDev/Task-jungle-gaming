@@ -39,6 +39,7 @@ test.describe("rede e cupons", () => {
     const filters = page.getByRole("complementary", { name: "Filtros" })
     const music = filters.getByRole("button", { name: /^Música \(\d+\)/ })
     await expect(music).toBeVisible()
+    await expect(music).not.toHaveText(/\(0\)/) // a contagem real chega com as facetas; em máquina lenta aparece zerada antes
     const musicCount = Number(/\((\d+)\)/.exec((await music.textContent()) ?? "")?.[1])
     expect(musicCount).toBeGreaterThan(0)
     expect(musicCount).toBeLessThan(36)

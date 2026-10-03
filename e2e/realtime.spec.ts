@@ -52,6 +52,7 @@ test.describe("tempo real (Socket.IO)", () => {
   test("eventos de pedido só chegam ao dono; sair ou trocar de usuário encerra a conexão anterior", async ({ page }) => {
     await goToCheckout(page) // Nova Sato
     await confirmPurchase(page)
+    await expect.poll(async () => (await apiOrders(page)).length).toBeGreaterThan(0) // o POST /orders pode ainda estar a caminho
     const [{ id: orderId }] = await apiOrders(page)
     const deliveries = (event: string) => page.evaluate(([name, id]) => window.__mocks.deliveries().filter((item) => item.event === name && item.id === id), [event, orderId])
 

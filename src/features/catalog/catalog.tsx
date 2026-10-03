@@ -77,37 +77,44 @@ function FiltersButton({ onClick, className }: { onClick: () => void; className?
   )
 }
 
-export function Catalog({ search, onChange, onReset }: Props) {
-  const params = toListParams(search)
-  const list = useQuery(nftListQuery(params))
-  const [filtersOpen, setFiltersOpen] = useState(false)
-  const isDesktop = useMediaQuery("(min-width: 1024px)", false)
-  const totalPages = list.data ? Math.max(1, Math.ceil(list.data.total / PAGE_SIZE)) : 1
-  const hasFilters = !!(search.search || search.category || search.network || search.minPrice || search.maxPrice || (search.tab && search.tab !== "all"))
-
+/** Mobile: busca + botão de filtros, como no Figma. Na home vem antes do banner; no mercado, no topo do catálogo. */
+export function MobileSearchBar({ search, onChange, onOpenFilters, className }: { search: NftSearch; onChange: Props["onChange"]; onOpenFilters: () => void; className?: string }) {
   function submitSearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     onChange({ search: String(new FormData(event.currentTarget).get("search") ?? "").trim() || undefined })
   }
+  return (
+    <form role="search" onSubmit={submitSearch} className={cn("mb-5 flex items-center gap-3 md:hidden", className)}>
+      <label htmlFor="busca-mobile" className="sr-only">Explorar coleções</label>
+      <div className="flex h-11 flex-1 items-center gap-2 rounded-md bg-card px-3">
+        <Search className="size-5 text-tan" aria-hidden />
+        <input key={search.search ?? ""} id="busca-mobile" name="search" type="search" defaultValue={search.search ?? ""} placeholder="Explorar coleções" className="min-w-0 flex-1 bg-transparent text-sm font-bold text-tan outline-none placeholder:text-tan" />
+      </div>
+      <FiltersButton onClick={onOpenFilters} />
+    </form>
+  )
+}
+
+export function Catalog({ search, onChange, onReset, filtersOpen: controlledOpen, onFiltersOpenChange, hideMobileSearch }: Props & { filtersOpen?: boolean; onFiltersOpenChange?: (open: boolean) => void; hideMobileSearch?: boolean }) {
+  const params = toListParams(search)
+  const list = useQuery(nftListQuery(params))
+  const [internalOpen, setInternalOpen] = useState(false)
+  const filtersOpen = controlledOpen ?? internalOpen
+  const setFiltersOpen = onFiltersOpenChange ?? setInternalOpen
+  const isDesktop = useMediaQuery("(min-width: 1024px)", false)
+  const totalPages = list.data ? Math.max(1, Math.ceil(list.data.total / PAGE_SIZE)) : 1
+  const hasFilters = !!(search.search || search.category || search.network || search.minPrice || search.maxPrice || (search.tab && search.tab !== "all"))
 
   return (
     <section id="mercado" aria-label="Mercado de NFTs" className="page-shell scroll-mt-4 py-8 md:py-12">
-      {/* Mobile: busca + filtros no topo, como no Figma. */}
-      <form role="search" onSubmit={submitSearch} className="mb-5 flex items-center gap-3 md:hidden">
-        <label htmlFor="busca-mobile" className="sr-only">Explorar coleções</label>
-        <div className="flex h-11 flex-1 items-center gap-2 rounded-md bg-card px-3">
-          <Search className="size-5 text-tan" aria-hidden />
-          <input key={search.search ?? ""} id="busca-mobile" name="search" type="search" defaultValue={search.search ?? ""} placeholder="Explorar coleções" className="min-w-0 flex-1 bg-transparent text-sm font-bold text-tan outline-none placeholder:text-tan" />
-        </div>
-        <FiltersButton onClick={() => setFiltersOpen(true)} />
-      </form>
+      {!hideMobileSearch && <MobileSearchBar search={search} onChange={onChange} onOpenFilters={() => setFiltersOpen(true)} />}
 
       <div className="grid gap-12 lg:grid-cols-[19.375rem_minmax(0,1fr)]">
         <aside aria-label="Filtros" className="hidden lg:block">{isDesktop && <Sidebar search={search} onChange={onChange} />}</aside>
 
         <div>
           <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
-            <div role="group" aria-label="Listagem" className="flex flex-wrap gap-x-6 gap-y-2 text-sm md:text-base">
+            <div role="group" aria-label="Listagem" className="flex flex-wrap gap-x-6 gap-y-2 text-sm max-md:w-full max-md:flex-nowrap max-md:gap-x-4 max-md:whitespace-nowrap md:text-base">
               {(Object.keys(TAB_LABELS) as NftTab[]).map((tab) => {
                 const active = (search.tab ?? "all") === tab
                 return (

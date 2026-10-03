@@ -12,12 +12,12 @@ const FEATURES = [
   { letter: "D", title: "Alertas de lançamentos", text: "Receba calendários de cunhagem, novidades de listas de acesso e análises do mercado." },
 ]
 
-const SOCIAL: { label: string; Icon: ComponentType<SVGProps<SVGSVGElement>> }[] = [
-  { label: "Facebook", Icon: FacebookIcon },
-  { label: "Instagram", Icon: InstagramIcon },
-  { label: "Twitter", Icon: TwitterIcon },
-  { label: "LinkedIn", Icon: LinkedinIcon },
-  { label: "YouTube", Icon: YoutubeIcon },
+const SOCIAL: { label: string; href: string; Icon: ComponentType<SVGProps<SVGSVGElement>> }[] = [
+  { label: "Facebook", href: "https://www.facebook.com/", Icon: FacebookIcon },
+  { label: "Instagram", href: "https://www.instagram.com/", Icon: InstagramIcon },
+  { label: "Twitter", href: "https://twitter.com/", Icon: TwitterIcon },
+  { label: "LinkedIn", href: "https://www.linkedin.com/", Icon: LinkedinIcon },
+  { label: "YouTube", href: "https://www.youtube.com/", Icon: YoutubeIcon },
 ]
 
 function Newsletter() {
@@ -113,9 +113,12 @@ export function SiteFooter() {
           <div>
             <h2 className="text-lg">Redes sociais</h2>
             <ul className="mt-3 flex flex-wrap gap-3">
-              {SOCIAL.map(({ label, Icon }) => (
+              {SOCIAL.map(({ label, href, Icon }) => (
                 <li key={label}>
-                  <span role="img" aria-label={label} className="grid size-8 place-items-center rounded-sm border border-primary text-primary"><Icon className="size-4" /></span>
+                  {/* Página inicial de cada rede, em nova aba (a Kurio é fictícia: não há perfil próprio para apontar). */}
+                  <a href={href} target="_blank" rel="noopener noreferrer" aria-label={`${label} (abre em nova aba)`} className="grid size-8 place-items-center rounded-sm border border-primary text-primary hover:bg-primary/10">
+                    <Icon className="size-4" aria-hidden />
+                  </a>
                 </li>
               ))}
             </ul>

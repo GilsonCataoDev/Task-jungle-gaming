@@ -2,6 +2,23 @@ import { expect, test } from "@playwright/test"
 import { prices, waitForApp } from "./helpers"
 
 test.describe("catálogo", () => {
+  test("ícones de redes sociais do rodapé levam à página inicial de cada rede, em nova aba", async ({ page }) => {
+    await page.goto("/")
+    const expected: Record<string, string> = {
+      Facebook: "https://www.facebook.com/",
+      Instagram: "https://www.instagram.com/",
+      Twitter: "https://twitter.com/",
+      LinkedIn: "https://www.linkedin.com/",
+      YouTube: "https://www.youtube.com/",
+    }
+    for (const [name, href] of Object.entries(expected)) {
+      const link = page.getByRole("contentinfo").getByRole("link", { name: new RegExp(`^${name}`) })
+      await expect(link).toHaveAttribute("href", href)
+      await expect(link).toHaveAttribute("target", "_blank")
+      await expect(link).toHaveAttribute("rel", /noopener/)
+    }
+  })
+
   test("a busca filtra ao digitar: sem Enter, sem empilhar histórico e voltando ao apagar", async ({ page }) => {
     await page.goto("/mercado")
     await waitForApp(page)

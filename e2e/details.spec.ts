@@ -85,12 +85,17 @@ test.describe("acesso direto e detalhe", () => {
     await expect(page.getByRole("dialog", { name: "Entrar" })).toBeVisible()
   })
 
-  test("Criadores e Aprenda avisam que chegam em breve", async ({ page }) => {
+  test("Criadores mostra quem fez o projeto e Aprenda avisa que chega em breve", async ({ page }) => {
     await page.goto("/criadores")
     await expect(page.getByRole("heading", { level: 1, name: "Criadores" })).toBeVisible()
-    await expect(page.getByText("chega em breve")).toBeVisible()
+    await expect(page.getByText("Gilson Catão", { exact: true })).toBeVisible()
+    const github = page.getByRole("link", { name: /github\.com\/GilsonCataoDev/ })
+    await expect(github).toHaveAttribute("href", "https://github.com/GilsonCataoDev")
+    await expect(github).toHaveAttribute("target", "_blank")
+    await expect(github).toHaveAttribute("rel", /noopener/)
     await page.goto("/aprenda")
     await expect(page.getByRole("heading", { level: 1, name: "Aprenda" })).toBeVisible()
+    await expect(page.getByText("chega em breve")).toBeVisible()
   })
 
   test("NFT esgotado não pode ser comprado", async ({ page }) => {

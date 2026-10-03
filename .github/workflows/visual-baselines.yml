@@ -26,6 +26,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium
+      # Parte do zero: baselines antigas deste sistema (de antes de uma mudança de design) seriam comparadas, e falhariam.
+      - run: rm -rf e2e/__screenshots__/${{ matrix.platform }}
       # 1ª execução cria as baselines deste sistema; a 2ª confirma que elas são estáveis (sem diferença entre execuções).
       - run: npx playwright test --grep "regressão visual"
       - run: npx playwright test --grep "regressão visual"
@@ -51,6 +53,6 @@ jobs:
           done
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add e2e/__screenshots__
+          git add -A e2e/__screenshots__
           git diff --cached --quiet || git commit -m "test(e2e): baselines visuais de Linux e macOS"
           git push

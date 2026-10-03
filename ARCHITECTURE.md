@@ -249,6 +249,13 @@ Baselines visuais ficam em `e2e/__screenshots__/<sistema>/<projeto>/`. Como a fo
 ## Desvios do Figma
 O design foi implementado a partir de **prints** das telas (desktop 1440 e mobile 390); o arquivo do Figma em si não
 pôde ser inspecionado (sem medidas exatas), então espaçamentos, raios e tamanhos foram medidos nos prints.
+
+**Conferência com o export do Figma:** depois da implementação, o PNG com todos os frames exportado do Figma foi
+recortado e comparado lado a lado com capturas do app (home, detalhe, carrinho, pagamento, login, cadastro e as telas
+mobile). Dessa comparação saíram três correções: rodapé como bloco recuado (não de borda a borda), a faixa "Mais desta
+coleção" no detalhe e, no mobile, a busca "Explorar coleções" antes do banner com as abas numa linha só. Perfil e
+Carteiras (desktop) e a confirmação em modal não foram recortados e comparados com o mesmo cuidado.
+
 Pontos conhecidos:
 
 - **Artes dos NFTs:** são recortes dos próprios prints (4 imagens, reaproveitadas entre os 36 NFTs, como no Figma),
@@ -260,7 +267,13 @@ Pontos conhecidos:
   Google/Facebook e "Esqueceu a senha?" mostram um aviso de que não existem na demonstração.
 - **Conteúdo inventado:** textos dos slides 2 e 3 do herói, avaliações dos colecionadores, descrições e nomes dos NFTs
   gerados (além dos que aparecem nos prints).
-- **Carrinho exige login:** no Figma o carrinho aparece antes de "Conectar e finalizar"; aqui ele é por usuário no servidor.
+- **Dados dos frames:** o Figma mostra contagens de coleção (33, 12, 65...) e valores de exemplo que não batem com o
+  catálogo real do mock (12, 4, 5...); o app mostra os números reais. O formulário de pagamento vem preenchido com a
+  carteira principal (no Figma está vazio), e a "faixa" de miniaturas do detalhe usa recortes diferentes da mesma arte.
+- **Botão de fechar nos modais de login e cadastro (mobile):** não existe no Figma; foi acrescentado para quem não usa
+  o teclado (Esc) poder sair.
+- **Carrossel "Colecionadores também viram" / "Mais desta coleção":** sem os pontos de paginação do Figma (seriam
+  controles sem função); "Mais desta coleção" mostra só os NFTs da mesma coleção (3 no exemplo), não sempre 5.
 - **Coleção selecionada:** o Figma mostra "Arte digital" já em laranja; aqui nenhuma coleção vem selecionada
   (senão a home já abriria filtrada). O laranja só aparece no filtro ativo.
 - **Acréscimos:** indicador de conexão (só aparece se cair), busca no cabeçalho (ícone do Figma, que aqui expande um

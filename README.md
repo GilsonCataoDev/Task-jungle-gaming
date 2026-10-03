@@ -201,6 +201,20 @@ e2e/          testes Playwright e baselines visuais
 scripts/      auditoria Lighthouse
 ```
 
+## Uso de IA
+
+Este projeto foi desenvolvido com apoio de um assistente de IA, o **Claude Code** (Anthropic). Registro aqui como foi
+usado, para a avaliação ser transparente:
+
+- **O que a IA fez:** escreveu a maior parte do código (telas, hooks, mocks do MSW, servidor Socket.IO simulado), os
+  testes Playwright, os scripts de Lighthouse e de CI e os documentos (`README.md`, `ARCHITECTURE.md`).
+- **O que ficou com o autor:** a direção do trabalho (requisitos, prioridades e o que corrigir), as escolhas de
+  produto, a conferência com o Figma e a decisão do que publicar.
+- **Como foi verificado:** tipos, lint e a suíte E2E (`npm run check` e `npm run test:e2e`) rodam no CI em Linux, macOS e
+  Windows, e a auditoria Lighthouse foi feita no deploy publicado. Os números deste README vêm dessas execuções.
+- **Rastro no histórico:** os commits feitos com o assistente terminam com `Co-Authored-By: Claude`. Os commits das
+  baselines visuais de Linux e macOS foram feitos pelo GitHub Actions.
+
 ## Deploy
 
 O build (`dist/`) é um site estático. Como é uma SPA, **toda rota precisa cair em `index.html`** para que o

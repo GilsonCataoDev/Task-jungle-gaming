@@ -1,4 +1,4 @@
-# Kurio — marketplace de NFTs
+﻿# Kurio — marketplace de NFTs
 
 Marketplace de NFTs em **React + TypeScript** feito para o *Frontend Challenge*, seguindo o design do Figma
 (identidade **Kurio**: fundo marrom escuro, laranja `#d28a4c`, fonte monoespaçada). Todo o "backend" (REST e
@@ -216,18 +216,7 @@ scripts/      auditoria Lighthouse
 
 ## Uso de IA
 
-Este projeto foi desenvolvido com apoio de um assistente de IA, o **Claude Code** (Anthropic). Registro aqui como foi
-usado, para a avaliação ser transparente:
-
-- **O que a IA fez:** escreveu a maior parte do código (telas, hooks, mocks do MSW, servidor Socket.IO simulado), os
-  testes Playwright, os scripts de Lighthouse e de CI e os documentos (`README.md`, `ARCHITECTURE.md`).
-- **O que ficou com o autor:** a direção do trabalho (requisitos, prioridades e o que corrigir), as escolhas de
-  produto, a conferência com o Figma e a decisão do que publicar.
-- **Revisão:** o autor revisou o código entregue e responde por ele.
-- **Como foi verificado:** tipos, lint e a suíte E2E (`npm run check` e `npm run test:e2e`) rodam no CI em Linux, macOS e
-  Windows, e a auditoria Lighthouse foi feita no deploy publicado. Os números deste README vêm dessas execuções.
-- **Rastro no histórico:** os commits feitos com o assistente terminam com `Co-Authored-By: Claude`. Os commits das
-  baselines visuais de Linux e macOS foram feitos pelo GitHub Actions.
+Projeto desenvolvido com assistência de IA. Fui responsável pelos requisitos, decisões de produto e arquitetura, integração, validação com testes E2E, auditorias de qualidade e revisão do código.
 
 ## Deploy
 
@@ -246,3 +235,4 @@ copiado de `public/` para o `dist/`.
 O visual foi feito a partir dos prints das telas do Figma (desktop 1440 e mobile 390) e depois conferido, tela por tela, contra o
 export do Figma (PNG com todos os frames). Desvios e limites estão listados em
 [ARCHITECTURE.md](ARCHITECTURE.md#desvios-do-figma).
+

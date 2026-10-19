@@ -10,6 +10,12 @@ carrinho, perfil, carteiras e pedidos.
 - **Arquitetura, contratos REST, eventos e decisões:** veja [ARCHITECTURE.md](ARCHITECTURE.md).
 - **Aplicação publicada:** https://task-jungle-gaming.vercel.app/
 
+## Demonstração
+
+![Fluxo do Kurio: início, catálogo, detalhe e carrinho](docs/media/kurio-demo.gif)
+
+Fluxo de navegação coberto pelas baselines visuais do Playwright: descoberta no catálogo, detalhe de um NFT e carrinho.
+
 ## Telas
 
 | Tela | Rota | Observações |
@@ -123,6 +129,26 @@ Eventos: `nft.updated` (preço e estoque) e `order.updated` (transições do ped
 o cliente só aplica versões maiores que a conhecida, então duplicados e atrasados são ignorados. Depois de
 reconectar, o REST volta a ser a fonte da verdade. O transporte simulado e suas limitações estão em
 [ARCHITECTURE.md](ARCHITECTURE.md#eventos-socketio).
+
+## 🧪 Como rodar os testes (Playwright)
+
+```bash
+npm install
+npx playwright install chromium  # necessário apenas na primeira execução
+npm run test:e2e
+```
+
+O comando faz o build, inicia o preview e executa os testes E2E. Para abrir o relatório após uma falha:
+
+```bash
+npx playwright show-report
+```
+
+Para atualizar intencionalmente as baselines visuais:
+
+```bash
+npm run test:e2e:update
+```
 
 ## Testes
 
